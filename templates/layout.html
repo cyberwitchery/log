@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{title}} · cyber witchery lab</title>
+
+  <!-- optional -->
+  {{#summary}}<meta name="description" content="{{summary}}">{{/summary}}
+
+  <style>
+    @font-face{
+      font-family:"IBM Plex Mono";
+      src:url("/IBMPlexMono-Regular.ttf") format("truetype");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"IBM Plex Mono";
+      src:url("/IBMPlexMono-Bold.ttf") format("truetype");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+    :root {
+      --bg: #fdfeff;
+      --fg: #000;
+      --muted: rgba(0,0,0,.72);
+      --faint: rgba(0,0,0,.14);
+      --faint2: rgba(0,0,0,0.08);
+      --max: 95ch;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      text-rendering: geometricPrecision;
+    }
+
+    code, pre, kbd {
+      font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-variant-ligatures: none;
+      font-size: 0.95em;
+    }
+
+    a { color: inherit; }
+    a:hover { text-decoration-style: solid; color: var(--faint);}
+    code, pre, kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-variant-ligatures: none;
+      font-size: 0.95em;
+    }
+    ::selection { background: #000; color: #fff; }
+
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 2.5rem 1.25rem; padding-bottom: 0rem; }
+
+    ul{ margin:0; padding-left:18px; list-style: none; }
+    li{ margin:0 0 6px 0; padding-left:14px; position:relative; border-left: 2px solid var(--muted);}
+
+    /* header */
+    header {
+      border-bottom: 2px solid var(--fg);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+    .header-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 1rem 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem 1rem;
+      align-items: baseline;
+    }
+    nav a {
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 2px;
+    }
+    nav a:hover { border-bottom-color: var(--fg); }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem .75rem;
+      align-items: baseline;
+      margin: 0 0 1rem 0;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* title block */
+    h1 {
+      margin: 0.2rem 0 0.75rem 0;
+      font-size: 2rem;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+    .summary {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.8rem;
+    }
+    .summary code {
+      background: var(--faint2);
+    }
+
+    .rule {
+      border: 0;
+      border-top: 2px solid var(--fg);
+      margin: 1rem 0;
+    }
+
+    /* content */
+    .content > :first-child { margin-top: 0; }
+
+    h2, h3, h4 {
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin: 2.25rem 0 .75rem 0;
+    }
+    h2 { font-size: 1.55rem; }
+    h3 { font-size: 1.25rem; }
+    h4 { font-size: 1.1rem; }
+
+    p { margin: 1rem 0; }
+    li { margin: .35rem 0; }
+
+    blockquote {
+      margin: 1.25rem 0;
+      padding: .75rem 1rem;
+      border-left: 6px solid var(--fg);
+      background: var(--faint2);
+    }
+    blockquote p { margin: .5rem 0; }
+
+    pre {
+      margin: 1.25rem 0;
+      padding: 1rem 1rem;
+      border-left: 2px solid var(--fg);
+      background: transparent;
+      overflow: auto;
+      line-height: 1.3;
+    }
+    code {
+      color: var(--muted);
+    }
+    pre code {
+      color: var(--fg);
+      background: transparent;
+      display: block;
+      white-space: pre;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: .95rem;
+    }
+    th, td {
+      text-align: left;
+      padding: .5rem .5rem;
+      border-bottom: 1px solid var(--faint);
+      vertical-align: top;
+    }
+    th { border-bottom: 2px solid var(--fg); }
+
+    hr { border: 0; border-top: 1px solid var(--faint); margin: 2rem 0; }
+
+    /* footer */
+    footer {
+      margin-top: 3rem;
+      background: var(--bg);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 1.25rem 1.25rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem 1rem;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: .95rem;
+    }
+
+    /* small screens */
+    @media (max-width: 520px) {
+      .header-inner { flex-direction: column; align-items: flex-start; gap: .5rem; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      nav { gap: .5rem .75rem; }
+    }
+
+    /* print */
+    @media print {
+      header, footer { position: static; }
+      nav { display: none; }
+      a { text-decoration: none; }
+      body { font-size: 11pt; }
+      pre { page-break-inside: avoid; }
+    }
+
+    .content {
+      line-height: 1.2;
+    }
+
+    .content p {
+      margin: 0 0 14px 0;
+    }
+
+    .content h2, .content h3, .content h4 {
+      margin-top: 30px; /* was 2.25rem; keeps your look, just steadier rhythm */
+    }
+
+    .content pre a,
+    .content pre a:hover,
+    .content pre a:visited {
+      text-decoration: none;
+      border-bottom: 0;
+      color: inherit;
+    }
+
+    .head {
+      border-left: 2px dashed;
+      margin-left: -1em;
+      padding: 5px 0 5px 1em;
+      margin-bottom: 1em;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <a class="brand" href="/">cyber witchery lab</a>
+      <nav aria-label="site">
+        <a href="/log/">log</a>
+        <a href="https://github.com/cyberwitchery/">github</a>
+        <a href="/book/">book a call</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <div class="head">
+    <h1 id="title">{{title}}</h1>
+    <div class="meta">
+      <time datetime="{{date}}">{{date}}</time>
+    </div>
+    {{#summary}}<div class="summary">{{{summary}}}</div>{{/summary}}
+
+    {{#links?}}
+    <section aria-label="links">
+      <b>links:</b>
+        {{#links}}
+        <a class="taglink" href="{{url}}">{{label}}</a>
+        {{/links}}
+    </section>
+    {{/links?}}
+    </div>
+
+    <!-- pandoc output goes here -->
+    <article class="content">
+      {{{content}}}
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <a href="/">cyber witchery lab</a>
+      </div>
+      <div>
+        <a href="/imprint/">imprint</a> ·
+        <a href="/privacy/">privacy</a> ·
+        <a href="/log/">log</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
