@@ -71,7 +71,9 @@ def get_post(target):
 
 
 def get_posts():
+    today = datetime.now().date()
     posts = [get_post(f) for f in os.listdir("posts")]
+    posts = [p for p in posts if p["date"] <= today]
     posts.sort(key=lambda p: p["date"], reverse=True)
     return posts
 
