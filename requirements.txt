@@ -1,0 +1,4 @@
+pystache
+pypandoc
+pyyaml
+webdavclient3
