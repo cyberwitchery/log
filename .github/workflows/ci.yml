@@ -1,0 +1,64 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check .
+      - run: ruff format --check .
+
+  frontmatter:
+    name: frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: validate post frontmatter
+        run: |
+          python -c "
+          import yaml, re, glob, sys
+          FM = re.compile(r'\A---\s*\n(.*?)\n---\s*\n', re.DOTALL)
+          ok = True
+          for f in sorted(glob.glob('posts/*.md')):
+              text = open(f).read()
+              m = FM.match(text)
+              if not m:
+                  print(f'{f}: missing frontmatter'); ok = False; continue
+              try:
+                  meta = yaml.safe_load(m.group(1))
+                  assert 'title' in meta and 'date' in meta, 'missing title or date'
+              except Exception as e:
+                  print(f'{f}: {e}'); ok = False
+          sys.exit(0 if ok else 1)
+          "
+
+  success:
+    name: success
+    needs: [lint, frontmatter]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: check results
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            exit 1
+          fi
