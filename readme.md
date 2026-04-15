@@ -68,3 +68,7 @@ publish.py      build-and-upload script
 config.py       WebDAV credentials (gitignored)
 out/            generated HTML + RSS (gitignored)
 ```
+
+<hr/>
+
+have fun!
