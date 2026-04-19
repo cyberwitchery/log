@@ -5,7 +5,7 @@
  <title>cyberwitchery lab log</title>
  <description>rss feed for the cyberwitchery lab log</description>
  <link>https://cyberwitchery.com/log</link>
- <pubDate>Tue, 20 Jan 2026 00:00:00 -0000</pubDate>
+ <pubDate>{{date}}</pubDate>
  <lastBuildDate>{{date}}</lastBuildDate>
  <ttl>1800</ttl>
  {{#posts}}
