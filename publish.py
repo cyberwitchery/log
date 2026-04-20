@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 from email import utils
 from datetime import datetime
@@ -17,9 +18,20 @@ c = Client(opts)
 
 
 def upload_files():
+    failed = []
     for filename in os.listdir("out"):
         remote_path = f"{remote_root}/{filename}"
-        c.upload_sync(remote_path=remote_path, local_path=f"out/{filename}")
+        try:
+            c.upload_sync(remote_path=remote_path, local_path=f"out/{filename}")
+        except Exception as e:
+            print(f"ERROR: failed to upload {filename}: {e}", file=sys.stderr)
+            failed.append(filename)
+    if failed:
+        print(
+            f"ERROR: {len(failed)} file(s) failed to upload: {', '.join(failed)}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 
 def from_path(f):
@@ -67,6 +79,14 @@ def get_post(target):
         contents = f.read()
 
     args, content = split_frontmatter(contents)
+
+    if "date" not in args:
+        print(
+            f"WARNING: skipping {target}: missing required 'date' field in frontmatter",
+            file=sys.stderr,
+        )
+        return None
+
     args["filename"] = target
     args["out_file"] = out_file(target)
     args["date_and_time"] = utils.format_datetime(
@@ -83,12 +103,26 @@ def get_post(target):
 def get_posts():
     today = datetime.now().date()
     posts = [get_post(f) for f in os.listdir("posts")]
-    posts = [p for p in posts if p["date"] <= today]
+    posts = [p for p in posts if p is not None and p["date"] <= today]
     posts.sort(key=lambda p: p["date"], reverse=True)
     return posts
 
 
+TEMPLATES = [
+    "templates/index_layout.html",
+    "templates/layout.html",
+    "templates/feed_tpl.rss",
+]
+
+
 def main():
+    missing = [t for t in TEMPLATES if not os.path.isfile(t)]
+    if missing:
+        print(
+            f"ERROR: missing template file(s): {', '.join(missing)}", file=sys.stderr
+        )
+        sys.exit(1)
+
     os.makedirs("out", exist_ok=True)
     posts = get_posts()
 
