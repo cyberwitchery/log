@@ -118,9 +118,7 @@ TEMPLATES = [
 def main():
     missing = [t for t in TEMPLATES if not os.path.isfile(t)]
     if missing:
-        print(
-            f"ERROR: missing template file(s): {', '.join(missing)}", file=sys.stderr
-        )
+        print(f"ERROR: missing template file(s): {', '.join(missing)}", file=sys.stderr)
         sys.exit(1)
 
     os.makedirs("out", exist_ok=True)
