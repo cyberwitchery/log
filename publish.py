@@ -10,6 +10,7 @@ import pypandoc
 import yaml
 
 from webdav3.client import Client
+from webdav3.exceptions import ConnectionException, NoConnection, WebDavException
 
 from config import opts, remote_root
 
@@ -23,7 +24,10 @@ def upload_files():
         remote_path = f"{remote_root}/{filename}"
         try:
             c.upload_sync(remote_path=remote_path, local_path=f"out/{filename}")
-        except Exception as e:
+        except (ConnectionException, NoConnection) as e:
+            print(f"ERROR: connection lost uploading {filename}: {e}", file=sys.stderr)
+            sys.exit(1)
+        except WebDavException as e:
             print(f"ERROR: failed to upload {filename}: {e}", file=sys.stderr)
             failed.append(filename)
     if failed:
