@@ -246,6 +246,16 @@
       padding: 5px 0 5px 1em;
       margin-bottom: 1em;
     }
+
+    .tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem; }
+    .tag {
+      font-size: .8rem;
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid var(--faint);
+      padding: .1rem .45rem;
+    }
+    .tag:hover { border-color: var(--fg); }
   </style>
 </head>
 
@@ -278,6 +288,12 @@
         {{/links}}
     </section>
     {{/links?}}
+
+    {{#has_tags}}
+    <div class="tags" aria-label="tags">
+      {{#tags}}<a class="tag" href="{{tag_file}}">{{tag}}</a>{{/tags}}
+    </div>
+    {{/has_tags}}
     </div>
 
     <!-- pandoc output goes here -->

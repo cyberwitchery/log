@@ -38,6 +38,10 @@ def upload_files():
         sys.exit(1)
 
 
+def tag_slug(tag):
+    return re.sub(r"[^a-z0-9]+", "-", tag.lower()).strip("-")
+
+
 def from_path(f):
     return os.path.basename(f)[:-3]
 
@@ -78,6 +82,17 @@ def render_index(tpl, posts):
         f.write(pystache.render(tpl, {"posts": posts}))
 
 
+def render_tag_pages(tpl, posts):
+    tags = {}
+    for post in posts:
+        for t in post.get("tags", []):
+            tags.setdefault(t["tag"], []).append(post)
+    for tag, tag_posts in tags.items():
+        filename = f"tag-{tag_slug(tag)}.html"
+        with open(f"out/{filename}", "w+") as f:
+            f.write(pystache.render(tpl, {"tag": tag, "posts": tag_posts}))
+
+
 def get_post(target):
     with open(f"posts/{target}") as f:
         contents = f.read()
@@ -101,6 +116,13 @@ def get_post(target):
     )
     args["content"] = pypandoc.convert_text(content, "html", format="md")
 
+    raw_tags = args.get("tags", [])
+    if raw_tags:
+        args["tags"] = [
+            {"tag": t, "tag_file": f"tag-{tag_slug(t)}.html"} for t in raw_tags
+        ]
+        args["has_tags"] = True
+
     return args
 
 
@@ -115,6 +137,7 @@ def get_posts():
 TEMPLATES = [
     "templates/index_layout.html",
     "templates/layout.html",
+    "templates/tag_layout.html",
     "templates/feed_tpl.rss",
 ]
 
@@ -138,6 +161,11 @@ def main():
 
     for post in posts:
         render_post(tpl, post)
+
+    with open("templates/tag_layout.html") as f:
+        tpl = f.read()
+
+    render_tag_pages(tpl, posts)
 
     with open("templates/feed_tpl.rss") as f:
         tpl = f.read()
