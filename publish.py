@@ -82,7 +82,14 @@ def get_post(target):
     with open(f"posts/{target}") as f:
         contents = f.read()
 
-    args, content = split_frontmatter(contents)
+    try:
+        args, content = split_frontmatter(contents)
+    except yaml.YAMLError as e:
+        print(
+            f"WARNING: skipping {target}: frontmatter YAML parse error: {e}",
+            file=sys.stderr,
+        )
+        return None
 
     if "date" not in args:
         print(
