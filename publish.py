@@ -63,7 +63,11 @@ def render_feed(tpl, posts):
     with open("out/feed.rss", "w+") as f:
         f.write(
             pystache.render(
-                tpl, {"date": utils.format_datetime(datetime.now(timezone.utc)), "posts": posts}
+                tpl,
+                {
+                    "date": utils.format_datetime(datetime.now(timezone.utc)),
+                    "posts": posts,
+                },
             )
         )
 
