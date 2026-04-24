@@ -3,7 +3,7 @@ import re
 import sys
 
 from email import utils
-from datetime import datetime
+from datetime import datetime, time, timezone
 
 import pystache
 import pypandoc
@@ -63,7 +63,11 @@ def render_feed(tpl, posts):
     with open("out/feed.rss", "w+") as f:
         f.write(
             pystache.render(
-                tpl, {"date": utils.format_datetime(datetime.now()), "posts": posts}
+                tpl,
+                {
+                    "date": utils.format_datetime(datetime.now(timezone.utc)),
+                    "posts": posts,
+                },
             )
         )
 
@@ -101,7 +105,7 @@ def get_post(target):
     args["filename"] = target
     args["out_file"] = out_file(target)
     args["date_and_time"] = utils.format_datetime(
-        datetime.combine(args["date"], datetime.min.time())
+        datetime.combine(args["date"], time(tzinfo=timezone.utc))
     )
     args["summary"] = pypandoc.convert_text(
         args.get("summary", ""), "html", format="md"
@@ -112,7 +116,7 @@ def get_post(target):
 
 
 def get_posts():
-    today = datetime.now().date()
+    today = datetime.now(timezone.utc).date()
     posts = [get_post(f) for f in os.listdir("posts")]
     posts = [p for p in posts if p is not None and p["date"] <= today]
     posts.sort(key=lambda p: p["date"], reverse=True)
