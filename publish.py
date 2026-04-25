@@ -60,7 +60,7 @@ def split_frontmatter(md):
 
 
 def render_feed(tpl, posts):
-    with open("out/feed.rss", "w+") as f:
+    with open("out/feed.rss", "w", encoding="utf-8") as f:
         f.write(
             pystache.render(
                 tpl,
@@ -73,17 +73,17 @@ def render_feed(tpl, posts):
 
 
 def render_post(tpl, args):
-    with open(f"out/{args['out_file']}", "w+") as f:
+    with open(f"out/{args['out_file']}", "w", encoding="utf-8") as f:
         f.write(pystache.render(tpl, args))
 
 
 def render_index(tpl, posts):
-    with open("out/index.html", "w+") as f:
+    with open("out/index.html", "w", encoding="utf-8") as f:
         f.write(pystache.render(tpl, {"posts": posts}))
 
 
 def get_post(target):
-    with open(f"posts/{target}") as f:
+    with open(f"posts/{target}", encoding="utf-8") as f:
         contents = f.read()
 
     try:
@@ -107,8 +107,9 @@ def get_post(target):
     args["date_and_time"] = utils.format_datetime(
         datetime.combine(args["date"], time(tzinfo=timezone.utc))
     )
-    args["summary"] = pypandoc.convert_text(
-        args.get("summary", ""), "html", format="md"
+    raw_summary = args.get("summary", "")
+    args["summary"] = (
+        pypandoc.convert_text(raw_summary, "html", format="md") if raw_summary else ""
     )
     args["content"] = pypandoc.convert_text(content, "html", format="md")
 
@@ -117,7 +118,7 @@ def get_post(target):
 
 def get_posts():
     today = datetime.now(timezone.utc).date()
-    posts = [get_post(f) for f in os.listdir("posts")]
+    posts = [get_post(f) for f in os.listdir("posts") if f.endswith(".md")]
     posts = [p for p in posts if p is not None and p["date"] <= today]
     posts.sort(key=lambda p: p["date"], reverse=True)
     return posts
@@ -139,18 +140,18 @@ def main():
     os.makedirs("out", exist_ok=True)
     posts = get_posts()
 
-    with open("templates/index_layout.html") as f:
+    with open("templates/index_layout.html", encoding="utf-8") as f:
         tpl = f.read()
 
     render_index(tpl, posts)
 
-    with open("templates/layout.html") as f:
+    with open("templates/layout.html", encoding="utf-8") as f:
         tpl = f.read()
 
     for post in posts:
         render_post(tpl, post)
 
-    with open("templates/feed_tpl.rss") as f:
+    with open("templates/feed_tpl.rss", encoding="utf-8") as f:
         tpl = f.read()
 
     render_feed(tpl, posts)
