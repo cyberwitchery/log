@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>log · cyber witchery lab</title>
+  <title>{{tag}} · log · cyber witchery lab</title>
 
-  <meta name="description" content="cyber witchery lab log">
+  <meta name="description" content="posts tagged '{{tag}}'">
 
   <script async src="https://plausible.io/js/pa-F2CvCq_805M4bKTJBD5-g.js"></script>
   <script>
@@ -96,6 +96,17 @@
 
     p { margin: 1rem 0; }
 
+    .date {
+      color: var(--faint);
+    }
+
+    .back { margin-bottom: 1rem; }
+
+    .feed-link {
+      font-size: .85rem;
+      color: var(--muted);
+    }
+
     footer {
       margin-top: 3rem;
       background: var(--bg);
@@ -113,18 +124,6 @@
       font-size: .95rem;
     }
 
-    .date {
-      color: var(--faint);
-    }
-
-    .tags { display: inline; }
-    .tag {
-      font-size: .8rem;
-      color: var(--faint);
-      text-decoration: none;
-    }
-    .tag:hover { text-decoration: underline; }
-
     @media (max-width: 520px) {
       .header-inner { flex-direction: column; align-items: flex-start; gap: .5rem; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
@@ -136,7 +135,6 @@
       nav { display: none; }
       a { text-decoration: none; }
       body { font-size: 11pt; }
-      pre { page-break-inside: avoid; }
     }
   </style>
 </head>
@@ -146,6 +144,7 @@
     <div class="header-inner">
       <a class="brand" href="/">cyber witchery lab</a>
       <nav aria-label="site">
+        <a href="/log/">log</a>
         <a href="https://github.com/cyberwitchery/">github</a>
         <a href="/book/">book a call</a>
       </nav>
@@ -154,11 +153,13 @@
 
   <main class="wrap">
 
-    <h1 id="title">log</h1>
+    <div class="back"><a href="index.html">&larr; all posts</a></div>
+    <h1 id="title">{{tag}}</h1>
+    <p class="feed-link"><a href="tag-{{tag_slug}}.rss">rss feed for this tag</a></p>
 
     <ul>
       {{#posts}}
-      <li><span class="date">{{date}}</span> <a href="{{out_file}}">{{title}}</a>{{#has_tags}} <span class="tags">{{#tags}}<a class="tag" href="{{tag_file}}">{{tag}}</a> {{/tags}}</span>{{/has_tags}}</li>
+      <li><span class="date">{{date}}</span> <a href="{{out_file}}">{{title}}</a></li>
       {{/posts}}
     </ul>
 
@@ -171,7 +172,8 @@
       </div>
       <div>
         <a href="/imprint.html">imprint</a> ·
-        <a href="/privacy.html">privacy</a>
+        <a href="/privacy.html">privacy</a> ·
+        <a href="/log/">log</a>
       </div>
     </div>
   </footer>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <atom:link href="https://cyberwitchery.com/log/tag-{{tag_slug}}.rss" rel="self" type="application/rss+xml" />
+ <title>cyberwitchery lab log — {{tag}}</title>
+ <description>rss feed for posts tagged '{{tag}}'</description>
+ <link>https://cyberwitchery.com/log/tag-{{tag_slug}}.html</link>
+ <pubDate>{{date}}</pubDate>
+ <lastBuildDate>{{date}}</lastBuildDate>
+ <ttl>1800</ttl>
+ {{#posts}}
+ <item>
+   <title>{{title}}</title>
+   <description>{{summary}}</description>
+   <link>https://cyberwitchery.com/log/{{out_file}}</link>
+   <pubDate>{{date_and_time}}</pubDate>
+   <guid>https://cyberwitchery.com/log/{{out_file}}</guid>
+ </item>
+ {{/posts}}
+</channel>
+</rss>
