@@ -23,6 +23,18 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
 
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get install -y pandoc
+      - run: pip install pyyaml pystache pypandoc pytest
+      - run: python -m pytest test_publish.py -v
+
   frontmatter:
     name: frontmatter
     runs-on: ubuntu-latest
@@ -53,7 +65,7 @@ jobs:
 
   success:
     name: success
-    needs: [lint, frontmatter]
+    needs: [lint, test, frontmatter]
     runs-on: ubuntu-latest
     if: always()
     steps:
