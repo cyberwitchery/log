@@ -102,8 +102,9 @@ def get_post(target):
         )
         return None
 
+    slug = args.get("slug", from_path(target))
     args["filename"] = target
-    args["out_file"] = out_file(target)
+    args["out_file"] = f"{slug}.html"
     args["date_and_time"] = utils.format_datetime(
         datetime.combine(args["date"], time(tzinfo=timezone.utc))
     )
@@ -117,7 +118,7 @@ def get_post(target):
 
 def get_posts():
     today = datetime.now(timezone.utc).date()
-    posts = [get_post(f) for f in os.listdir("posts")]
+    posts = [get_post(f) for f in os.listdir("posts") if f.endswith(".md")]
     posts = [p for p in posts if p is not None and p["date"] <= today]
     posts.sort(key=lambda p: p["date"], reverse=True)
     return posts
