@@ -240,6 +240,9 @@
       color: inherit;
     }
 
+    .tags { font-size: 0.85em; }
+    .tag { color: var(--muted); white-space: nowrap; }
+
     .head {
       border-left: 2px dashed;
       margin-left: -1em;
@@ -267,6 +270,7 @@
     <h1 id="title">{{title}}</h1>
     <div class="meta">
       <time datetime="{{date}}">{{date}}</time>
+      {{#has_tags}}<span class="tags">{{#tags}}<span class="tag">#{{name}}</span> {{/tags}}</span>{{/has_tags}}
     </div>
     {{#summary}}<div class="summary">{{{summary}}}</div>{{/summary}}
 
