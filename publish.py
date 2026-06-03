@@ -111,6 +111,11 @@ def get_post(target):
     )
     args["content"] = pypandoc.convert_text(content, "html", format="md")
 
+    raw_tags = args.get("tags", [])
+    if raw_tags:
+        args["has_tags"] = True
+        args["tags"] = [{"name": t} for t in raw_tags]
+
     return args
 
 
