@@ -1,3 +1,4 @@
+import argparse
 import os
 import re
 import sys
@@ -134,7 +135,19 @@ TEMPLATES = [
 ]
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Render and publish blog posts.")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="render output files without uploading to WebDAV",
+    )
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
     missing = [t for t in TEMPLATES if not os.path.isfile(t)]
     if missing:
         print(f"ERROR: missing template file(s): {', '.join(missing)}", file=sys.stderr)
@@ -159,7 +172,10 @@ def main():
 
     render_feed(tpl, posts)
 
-    upload_files()
+    if args.dry_run:
+        print(f"Dry run: {len(posts)} post(s) rendered to out/")
+    else:
+        upload_files()
 
 
 if __name__ == "__main__":
