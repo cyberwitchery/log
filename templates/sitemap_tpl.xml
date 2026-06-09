@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://cyberwitchery.com/log/</loc>
+    <lastmod>{{today}}</lastmod>
+  </url>
+  {{#posts}}
+  <url>
+    <loc>https://cyberwitchery.com/log/{{out_file}}</loc>
+    <lastmod>{{date_iso}}</lastmod>
+  </url>
+  {{/posts}}
+</urlset>

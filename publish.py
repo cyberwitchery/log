@@ -57,6 +57,19 @@ def split_frontmatter(md):
     return meta, body
 
 
+def render_sitemap(tpl, posts):
+    with open("out/sitemap.xml", "w+", encoding="utf-8") as f:
+        f.write(
+            pystache.render(
+                tpl,
+                {
+                    "today": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                    "posts": posts,
+                },
+            )
+        )
+
+
 def render_feed(tpl, posts):
     with open("out/feed.rss", "w+", encoding="utf-8") as f:
         f.write(
@@ -103,6 +116,7 @@ def get_post(target):
     slug = args.get("slug", from_path(target))
     args["filename"] = target
     args["out_file"] = f"{slug}.html"
+    args["date_iso"] = args["date"].strftime("%Y-%m-%d")
     args["date_and_time"] = utils.format_datetime(
         datetime.combine(args["date"], time(tzinfo=timezone.utc))
     )
@@ -131,6 +145,7 @@ TEMPLATES = [
     "templates/index_layout.html",
     "templates/layout.html",
     "templates/feed_tpl.rss",
+    "templates/sitemap_tpl.xml",
 ]
 
 
@@ -158,6 +173,11 @@ def main():
         tpl = f.read()
 
     render_feed(tpl, posts)
+
+    with open("templates/sitemap_tpl.xml", encoding="utf-8") as f:
+        tpl = f.read()
+
+    render_sitemap(tpl, posts)
 
     upload_files()
 
