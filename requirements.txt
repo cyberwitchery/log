@@ -1,4 +1,4 @@
-pystache
-pypandoc
-pyyaml
-webdavclient3
+pystache>=0.6.0
+pypandoc>=1.4
+pyyaml>=5.1
+webdavclient3>=3.14
