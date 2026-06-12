@@ -1,4 +1,4 @@
-from publish import sanitize_slug, SLUG_RE
+from publish import sanitize_slug, MAX_SLUG_LEN, SLUG_RE
 
 
 class TestSlugRegex:
@@ -75,3 +75,22 @@ class TestSanitizeSlug:
         result = sanitize_slug("foo\\bar", "fallback", "test.md")
         assert result == "fallback"
         assert "bad slug" in capsys.readouterr().err
+
+    def test_int_slug_coerced(self):
+        assert sanitize_slug(123, "fallback", "test.md") == "123"
+
+    def test_bool_slug_coerced(self):
+        assert sanitize_slug(True, "fallback", "test.md") == "True"
+
+    def test_none_slug_coerced(self):
+        assert sanitize_slug(None, "fallback", "test.md") == "None"
+
+    def test_too_long_slug_falls_back(self, capsys):
+        long_slug = "a" * (MAX_SLUG_LEN + 1)
+        result = sanitize_slug(long_slug, "fallback", "test.md")
+        assert result == "fallback"
+        assert "bad slug" in capsys.readouterr().err
+
+    def test_max_length_slug_passes(self):
+        slug = "a" * MAX_SLUG_LEN
+        assert sanitize_slug(slug, "fallback", "test.md") == slug

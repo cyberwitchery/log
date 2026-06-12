@@ -59,8 +59,12 @@ def split_frontmatter(md):
     return meta, body
 
 
+MAX_SLUG_LEN = 200
+
+
 def sanitize_slug(raw, fallback, filename):
-    if not SLUG_RE.match(raw):
+    raw = str(raw) if not isinstance(raw, str) else raw
+    if len(raw) > MAX_SLUG_LEN or not SLUG_RE.match(raw):
         if SLUG_RE.match(fallback):
             print(
                 f"WARNING: {filename}: bad slug {raw!r}, using {fallback!r}",
