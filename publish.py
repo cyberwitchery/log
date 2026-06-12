@@ -44,6 +44,8 @@ def out_file(f):
     return "{}.html".format(from_path(f))
 
 
+SLUG_RE = re.compile(r"\A[a-zA-Z0-9][a-zA-Z0-9._-]*\Z")
+
 FM_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 
 
@@ -55,6 +57,22 @@ def split_frontmatter(md):
     meta = yaml.safe_load(meta_raw) or {}
     body = md[m.end() :]
     return meta, body
+
+
+def sanitize_slug(raw, fallback, filename):
+    if not SLUG_RE.match(raw):
+        if SLUG_RE.match(fallback):
+            print(
+                f"WARNING: {filename}: bad slug {raw!r}, using {fallback!r}",
+                file=sys.stderr,
+            )
+            return fallback
+        print(
+            f"WARNING: skipping {filename}: bad slug {raw!r} and no safe fallback",
+            file=sys.stderr,
+        )
+        return None
+    return raw
 
 
 def render_sitemap(tpl, posts):
@@ -113,7 +131,11 @@ def get_post(target):
         )
         return None
 
-    slug = args.get("slug", from_path(target))
+    fallback_slug = from_path(target)
+    raw_slug = args.get("slug", fallback_slug)
+    slug = sanitize_slug(raw_slug, fallback_slug, target)
+    if slug is None:
+        return None
     args["filename"] = target
     args["out_file"] = f"{slug}.html"
     args["date_iso"] = args["date"].strftime("%Y-%m-%d")
