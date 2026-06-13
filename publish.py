@@ -3,7 +3,7 @@ import re
 import sys
 
 from email import utils
-from datetime import datetime, time, timezone
+from datetime import date, datetime, time, timezone
 
 import pystache
 import pypandoc
@@ -112,6 +112,16 @@ def get_post(target):
             file=sys.stderr,
         )
         return None
+
+    if isinstance(args["date"], str):
+        try:
+            args["date"] = date.fromisoformat(args["date"])
+        except ValueError:
+            print(
+                f"WARNING: skipping {target}: invalid date format: {args['date']}",
+                file=sys.stderr,
+            )
+            return None
 
     slug = args.get("slug", from_path(target))
     args["filename"] = target
