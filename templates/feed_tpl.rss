@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 <channel>
   <atom:link href="https://cyberwitchery.com/log/feed.rss" rel="self" type="application/rss+xml" />
  <title>cyberwitchery lab log</title>
  <description>rss feed for the cyberwitchery lab log</description>
  <link>https://cyberwitchery.com/log</link>
- <pubDate>Tue, 20 Jan 2026 00:00:00 -0000</pubDate>
+ <pubDate>{{date}}</pubDate>
  <lastBuildDate>{{date}}</lastBuildDate>
  <ttl>1800</ttl>
  {{#posts}}
  <item>
    <title>{{title}}</title>
-   <description>{{summary}}</description>
+   <description><![CDATA[{{{summary}}}]]></description>
    <link>https://cyberwitchery.com/log/{{out_file}}</link>
    <pubDate>{{date_and_time}}</pubDate>
    <guid>https://cyberwitchery.com/log/{{out_file}}</guid>
+   <content:encoded><![CDATA[{{{content}}}]]></content:encoded>
+   {{#tags}}<category>{{name}}</category>
+   {{/tags}}
  </item>
  {{/posts}}
 </channel>

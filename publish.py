@@ -1,25 +1,39 @@
 import os
 import re
+import sys
 
 from email import utils
-from datetime import datetime
+from datetime import date, datetime, time, timezone
 
 import pystache
 import pypandoc
 import yaml
 
-from webdav3.client import Client
-
-from config import opts, remote_root
-
-
-c = Client(opts)
-
 
 def upload_files():
+    from webdav3.client import Client
+    from webdav3.exceptions import ConnectionException, NoConnection, WebDavException
+
+    from config import opts, remote_root
+
+    c = Client(opts)
+    failed = []
     for filename in os.listdir("out"):
         remote_path = f"{remote_root}/{filename}"
-        c.upload_sync(remote_path=remote_path, local_path=f"out/{filename}")
+        try:
+            c.upload_sync(remote_path=remote_path, local_path=f"out/{filename}")
+        except (ConnectionException, NoConnection) as e:
+            print(f"ERROR: connection lost uploading {filename}: {e}", file=sys.stderr)
+            sys.exit(1)
+        except WebDavException as e:
+            print(f"ERROR: failed to upload {filename}: {e}", file=sys.stderr)
+            failed.append(filename)
+    if failed:
+        print(
+            f"ERROR: {len(failed)} file(s) failed to upload: {', '.join(failed)}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 
 def from_path(f):
@@ -43,70 +57,137 @@ def split_frontmatter(md):
     return meta, body
 
 
-def render_feed(tpl, posts):
-    with open("out/feed.rss", "w+") as f:
+def render_sitemap(tpl, posts):
+    with open("out/sitemap.xml", "w+", encoding="utf-8") as f:
         f.write(
             pystache.render(
-                tpl, {"date": utils.format_datetime(datetime.now()), "posts": posts}
+                tpl,
+                {
+                    "today": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                    "posts": posts,
+                },
+            )
+        )
+
+
+def render_feed(tpl, posts):
+    with open("out/feed.rss", "w+", encoding="utf-8") as f:
+        f.write(
+            pystache.render(
+                tpl,
+                {
+                    "date": utils.format_datetime(datetime.now(timezone.utc)),
+                    "posts": posts,
+                },
             )
         )
 
 
 def render_post(tpl, args):
-    with open(f"out/{args['out_file']}", "w+") as f:
+    with open(f"out/{args['out_file']}", "w+", encoding="utf-8") as f:
         f.write(pystache.render(tpl, args))
 
 
 def render_index(tpl, posts):
-    with open("out/index.html", "w+") as f:
+    with open("out/index.html", "w+", encoding="utf-8") as f:
         f.write(pystache.render(tpl, {"posts": posts}))
 
 
 def get_post(target):
-    with open(f"posts/{target}") as f:
+    with open(f"posts/{target}", encoding="utf-8") as f:
         contents = f.read()
 
-    args, content = split_frontmatter(contents)
+    try:
+        args, content = split_frontmatter(contents)
+    except yaml.YAMLError as e:
+        print(
+            f"WARNING: skipping {target}: frontmatter YAML parse error: {e}",
+            file=sys.stderr,
+        )
+        return None
+
+    if "date" not in args:
+        print(
+            f"WARNING: skipping {target}: missing required 'date' field in frontmatter",
+            file=sys.stderr,
+        )
+        return None
+
+    if isinstance(args["date"], str):
+        try:
+            args["date"] = date.fromisoformat(args["date"])
+        except ValueError:
+            print(
+                f"WARNING: skipping {target}: invalid date format: {args['date']}",
+                file=sys.stderr,
+            )
+            return None
+
+    slug = args.get("slug", from_path(target))
     args["filename"] = target
-    args["out_file"] = out_file(target)
+    args["out_file"] = f"{slug}.html"
+    args["date_iso"] = args["date"].strftime("%Y-%m-%d")
     args["date_and_time"] = utils.format_datetime(
-        datetime.combine(args["date"], datetime.min.time())
+        datetime.combine(args["date"], time(tzinfo=timezone.utc))
     )
     args["summary"] = pypandoc.convert_text(
         args.get("summary", ""), "html", format="md"
     )
     args["content"] = pypandoc.convert_text(content, "html", format="md")
 
+    raw_tags = args.get("tags", [])
+    if raw_tags:
+        args["has_tags"] = True
+        args["tags"] = [{"name": t} for t in raw_tags]
+
     return args
 
 
 def get_posts():
-    today = datetime.now().date()
-    posts = [get_post(f) for f in os.listdir("posts")]
-    posts = [p for p in posts if p["date"] <= today]
+    today = datetime.now(timezone.utc).date()
+    posts = [get_post(f) for f in os.listdir("posts") if f.endswith(".md")]
+    posts = [p for p in posts if p is not None and p["date"] <= today]
     posts.sort(key=lambda p: p["date"], reverse=True)
     return posts
 
 
+TEMPLATES = [
+    "templates/index_layout.html",
+    "templates/layout.html",
+    "templates/feed_tpl.rss",
+    "templates/sitemap_tpl.xml",
+]
+
+
 def main():
+    missing = [t for t in TEMPLATES if not os.path.isfile(t)]
+    if missing:
+        print(f"ERROR: missing template file(s): {', '.join(missing)}", file=sys.stderr)
+        sys.exit(1)
+
     os.makedirs("out", exist_ok=True)
     posts = get_posts()
 
-    with open("templates/index_layout.html") as f:
+    with open("templates/index_layout.html", encoding="utf-8") as f:
         tpl = f.read()
 
     render_index(tpl, posts)
 
-    with open("templates/layout.html") as f:
+    with open("templates/layout.html", encoding="utf-8") as f:
         tpl = f.read()
 
     for post in posts:
         render_post(tpl, post)
 
-    with open("templates/feed_tpl.rss") as f:
+    with open("templates/feed_tpl.rss", encoding="utf-8") as f:
         tpl = f.read()
 
     render_feed(tpl, posts)
+
+    with open("templates/sitemap_tpl.xml", encoding="utf-8") as f:
+        tpl = f.read()
+
+    render_sitemap(tpl, posts)
 
     upload_files()
 
