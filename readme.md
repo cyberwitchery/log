@@ -40,33 +40,12 @@ this will:
 3. generate an rss feed (`feed.rss`).
 4. upload everything to the configured webdav endpoint.
 
-webdav credentials and the remote path live in `config.py` (gitignored).
-the file must define `opts` (a dict passed to `webdav3.client.Client`) and
-`remote_root` (the remote directory path).
-
 ## dependencies
-
-listed in `requirements.txt`:
-
-- **pystache** — mustache templating
-- **pypandoc** — markdown-to-html conversion (requires pandoc on `$PATH`)
-- **pyyaml** — frontmatter parsing
-- **webdavclient3** — webdav upload
 
 install with:
 
 ```
 pip install -r requirements.txt
-```
-
-## directory layout
-
-```
-posts/          markdown source files
-templates/      pystache templates (index, post, rss feed)
-publish.py      build-and-upload script
-config.py       webdav credentials (gitignored)
-out/            generated html + rss (gitignored)
 ```
 
 <hr/>
