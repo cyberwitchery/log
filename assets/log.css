@@ -1,0 +1,289 @@
+/* ============================================================
+   cyberwitchery log — stylesheet
+   Theme is driven by a `data-theme="light|dark"` attribute on
+   <html>, set before paint by the no-flash snippet (see the
+   inline <head> script in the templates). Tokens are CSS
+   variables so light/dark + syntax highlighting recolor from
+   one place.
+   ============================================================ */
+
+/* ---- self-hosted JetBrains Mono ------------------------- */
+/* variable font (weight 400-700), served at fonts/.
+   subsetted to latin + latin-ext, the same files Google serves;
+   out-of-range glyphs fall back to the system mono stack. */
+@font-face {
+  font-family:'JetBrains Mono';
+  font-style:normal; font-weight:400 700; font-display:swap;
+  src:url('fonts/JetBrainsMono-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family:'JetBrains Mono';
+  font-style:normal; font-weight:400 700; font-display:swap;
+  src:url('fonts/JetBrainsMono-latin-ext.woff2') format('woff2');
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---- design tokens -------------------------------------- */
+:root,
+[data-theme="dark"] {
+  --bg:#0a0a0a;        --bg-soft:#141414;
+  --fg:#e4e4e4;        --hd:#f4f4f4;
+  --mut:#8a8a8a;       --faint:#5a5a5a;
+  --line:rgba(255,255,255,0.09);   --line-2:rgba(255,255,255,0.17);
+  --code-bg:rgba(255,255,255,0.035); --code-bd:rgba(255,255,255,0.08);
+  --chip-bg:rgba(255,255,255,0.05);  --chip-fg:#bdbdbd;
+  --chip-on-bg:#e8e8e8;              --chip-on-fg:#0a0a0a;
+  --inv-bg:#e8e8e8;    --inv-fg:#0a0a0a;
+  /* skylighting tokens */
+  --tok-kw:#c8a8ff; --tok-str:#9ed29a; --tok-num:#e6b88a;
+  --tok-fn:#8fb4ff; --tok-type:#7fd1c4; --tok-com:#666666;
+  --sel-bg:#e8e8e8; --sel-fg:#0a0a0a;
+}
+
+[data-theme="light"] {
+  --bg:#f4f4f2;        --bg-soft:#eceae6;
+  --fg:#2c2c2a;        --hd:#0f0f0e;
+  --mut:#6b6b67;       --faint:#9b9b96;
+  --line:rgba(0,0,0,0.11);   --line-2:rgba(0,0,0,0.2);
+  --code-bg:rgba(0,0,0,0.035); --code-bd:rgba(0,0,0,0.09);
+  --chip-bg:rgba(0,0,0,0.05);  --chip-fg:#46463f;
+  --chip-on-bg:#111110;        --chip-on-fg:#f4f4f2;
+  --inv-bg:#111110;    --inv-fg:#f4f4f2;
+  --tok-kw:#7a3fd0; --tok-str:#2e7d32; --tok-num:#9c5311;
+  --tok-fn:#2b59bf; --tok-type:#0f7a6c; --tok-com:#9b9b96;
+  --sel-bg:#111110; --sel-fg:#f4f4f2;
+}
+
+/* No-JS fallback: honour the OS setting when no attribute is set. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg:#f4f4f2; --bg-soft:#eceae6; --fg:#2c2c2a; --hd:#0f0f0e;
+    --mut:#6b6b67; --faint:#9b9b96;
+    --line:rgba(0,0,0,0.11); --line-2:rgba(0,0,0,0.2);
+    --code-bg:rgba(0,0,0,0.035); --code-bd:rgba(0,0,0,0.09);
+    --chip-bg:rgba(0,0,0,0.05); --chip-fg:#46463f;
+    --chip-on-bg:#111110; --chip-on-fg:#f4f4f2;
+    --inv-bg:#111110; --inv-fg:#f4f4f2;
+    --tok-kw:#7a3fd0; --tok-str:#2e7d32; --tok-num:#9c5311;
+    --tok-fn:#2b59bf; --tok-type:#0f7a6c; --tok-com:#9b9b96;
+    --sel-bg:#111110; --sel-fg:#f4f4f2;
+  }
+}
+
+/* ---- base ----------------------------------------------- */
+* { box-sizing:border-box; }
+html, body { margin:0; padding:0; }
+
+body {
+  background:var(--bg);
+  color:var(--fg);
+  font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size:14px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  transition:background .2s ease, color .2s ease;
+}
+a { color:inherit; text-decoration:none; }
+::selection { background:var(--sel-bg); color:var(--sel-fg); }
+
+.wrap { max-width:1200px; margin:0 auto; padding:0 36px; }
+
+/* ---- masthead ------------------------------------------- */
+.masthead {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px 20px; flex-wrap:wrap;
+  padding:24px 0; border-bottom:1px solid var(--line);
+}
+.masthead__brand { font-weight:700; color:var(--hd); }
+.masthead__nav {
+  display:flex; align-items:center; gap:14px;
+  color:var(--faint); font-size:13px; flex-wrap:wrap;
+}
+.masthead__nav a { color:var(--mut); }
+.masthead__nav a:hover,
+.masthead__nav a[aria-current] { color:var(--hd); }
+
+/* theme toggle */
+.theme-toggle {
+  margin-left:4px; width:30px; height:30px; padding:0;
+  border:1px solid var(--line-2); border-radius:50%;
+  background:transparent; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.theme-toggle__glyph {
+  width:15px; height:15px; border-radius:50%;
+  border:1px solid var(--mut);
+  background:linear-gradient(90deg, var(--fg) 0 50%, transparent 50% 100%);
+}
+
+/* ---- index ---------------------------------------------- */
+.log-head { padding:54px 0 26px; }
+.log-head h1 {
+  margin:0; font-weight:700; font-size:30px;
+  letter-spacing:-0.02em; color:var(--hd);
+}
+
+.tag-filter {
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  padding:6px 0 26px;
+}
+.tag-filter button {
+  font:inherit; font-size:12px; cursor:pointer;
+  padding:5px 11px; border-radius:999px;
+  border:1px solid transparent;
+  background:var(--chip-bg); color:var(--chip-fg);
+}
+.tag-filter button.is-active {
+  background:var(--chip-on-bg); color:var(--chip-on-fg);
+  border-color:var(--chip-on-bg);
+}
+
+.log-list { display:flex; flex-direction:column; border-bottom:1px solid var(--line); }
+.log-count { font-size:12px; color:var(--faint); padding:18px 0 0; }
+
+/* a post row — date in a left gutter, "margin rail" feel */
+.row {
+  display:grid;
+  grid-template-columns:128px 1fr auto;
+  grid-template-areas:"date title arrow" "date tags arrow";
+  gap:5px 28px; align-items:baseline;
+  padding:17px 0; border-top:1px solid var(--line);
+}
+.row[hidden] { display:none; }
+.row__date  { grid-area:date;  font-size:12px; color:var(--faint); letter-spacing:0.03em; }
+.row__title { grid-area:title; font-size:16px; color:var(--fg); font-weight:500; line-height:1.4; }
+.row__tags  { grid-area:tags;  margin-top:3px; font-size:12px; color:var(--mut); }
+.row__arrow { grid-area:arrow; align-self:center; font-size:13px; color:var(--faint); transition:transform .15s ease; }
+.row:hover .row__title { color:var(--hd); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--line-2); }
+.row:hover .row__arrow { color:var(--mut); transform:translateX(2px); }
+
+/* ---- post ----------------------------------------------- */
+.post { padding:30px 0 0; }
+.post__back { font-size:13px; color:var(--mut); }
+.post__back:hover { color:var(--hd); }
+.post__title {
+  margin:26px 0 8px; max-width:760px;
+  font-weight:700; font-size:30px; line-height:1.28;
+  letter-spacing:-0.02em; color:var(--hd);
+}
+.post__lede {
+  margin:0 0 30px; max-width:620px;
+  font-size:14px; line-height:1.6; color:var(--mut);
+}
+.post__lede code { font-size:0.82em; }
+
+.post-cols {
+  display:grid; grid-template-columns:212px minmax(0, 1fr); gap:60px;
+  align-items:start; max-width:1200px; margin:0 auto;
+}
+/* min-width:0 so a wide <pre> scrolls (overflow-x) instead of
+   stretching the column past the wrap */
+.post-main { min-width:0; }
+
+/* meta rail (sticky on desktop) */
+.post-rail {
+  position:sticky; top:22px;
+  display:flex; flex-direction:column; gap:20px;
+  font-size:12px;
+}
+.post-rail__date { color:var(--faint); }
+.post-rail__tags { display:flex; flex-wrap:wrap; gap:6px; }
+.post-rail__tags span {
+  font-size:11px; color:var(--chip-fg); background:var(--chip-bg);
+  border-radius:999px; padding:3px 9px;
+}
+.post-rail__links { display:flex; flex-direction:column; gap:7px; }
+.post-rail__links a { color:var(--mut); text-decoration:underline; text-underline-offset:2px; }
+.post-rail__links a:hover { color:var(--hd); }
+
+/* ---- article prose (pandoc body) ------------------------ */
+.post-body { font-size:14px; line-height:1.78; color:var(--fg); }
+.post-body h2 {
+  margin:44px 0 14px; scroll-margin-top:72px;
+  font-size:18px; font-weight:700; letter-spacing:-0.01em; color:var(--hd);
+}
+.post-body p { margin:0 0 18px; }
+.post-body strong { color:var(--hd); font-weight:600; }
+.post-body a { color:var(--fg); text-decoration:underline; text-underline-offset:2px; text-decoration-color:var(--line-2); }
+.post-body a:hover { color:var(--hd); text-decoration-color:var(--hd); }
+.post-body ul { margin:2px 0 18px; padding:0; list-style:none; display:flex; flex-direction:column; gap:11px; }
+.post-body li { position:relative; padding-left:22px; }
+.post-body li::before { content:"—"; position:absolute; left:0; color:var(--faint); }
+.post-body code {
+  font-size:0.84em; background:var(--code-bg);
+  border:1px solid var(--code-bd); border-radius:3px;
+  padding:1px 5px; color:var(--hd);
+}
+.post-body pre {
+  background:var(--code-bg); border:1px solid var(--code-bd);
+  border-radius:7px; padding:18px 20px; overflow-x:auto; margin:0 0 24px;
+}
+.post-body pre code {
+  background:none; border:none; padding:0;
+  font-size:13px; line-height:1.65; color:var(--fg);
+}
+
+/* footnotes (pandoc emits section.footnotes) */
+.post-body .footnotes,
+.post-footnotes {
+  border-top:1px solid var(--line); margin-top:40px; padding-top:20px;
+  font-size:12.5px; color:var(--mut); line-height:1.7;
+}
+/* pandoc prefixes the footnotes with its own <hr>; the border-top
+   above is the hairline, so hide pandoc's to avoid a double line */
+.post-body .footnotes hr { display:none; }
+
+/* ---- footer --------------------------------------------- */
+.site-footer {
+  border-top:1px solid var(--line); margin-top:48px; padding:22px 0 60px;
+  display:flex; gap:14px; flex-wrap:wrap;
+  color:var(--faint); font-size:13px;
+}
+.site-footer a { color:var(--mut); }
+.site-footer a:hover { color:var(--hd); }
+.site-footer a.u { text-decoration:underline; }
+
+/* ============================================================
+   pandoc / skylighting syntax tokens.
+   These are the classes pandoc emits inside
+   <pre class="sourceCode"><code>. Mapping them to the theme
+   variables is the ONLY highlighting code needed — pandoc does
+   the tokenising at build time, this just colours it per theme.
+   ============================================================ */
+.post-body .kw, .post-body .cf, .post-body .im { color:var(--tok-kw); font-weight:500; } /* Keyword, ControlFlow, Import */
+.post-body .dt, .post-body .bu { color:var(--tok-type); }                                /* DataType, BuiltIn */
+.post-body .st, .post-body .ch, .post-body .vs, .post-body .ss, .post-body .at { color:var(--tok-str); } /* String, Char, Attribute */
+.post-body .dv, .post-body .bn, .post-body .fl, .post-body .cn { color:var(--tok-num); }  /* Numbers, Constant */
+.post-body .fu { color:var(--tok-fn); }                                                  /* Function */
+.post-body .co, .post-body .do { color:var(--tok-com); font-style:italic; }               /* Comment, Documentation */
+.post-body .op, .post-body .sc { color:var(--mut); }                                      /* Operator, SpecialChar */
+.post-body .pp { color:var(--tok-kw); }                                                   /* Preprocessor / macro */
+.post-body .er, .post-body .wa { color:var(--tok-num); }                                  /* Error, Warning */
+/* pandoc line-number anchors, if you enable them */
+.post-body pre.numberSource code { counter-reset:source-line 0; }
+.post-body a.sourceLine { color:inherit; text-decoration:none; }
+
+/* ---- responsive ----------------------------------------- */
+@media (max-width:720px) {
+  .wrap { padding:0 20px; }
+
+  .row {
+    grid-template-columns:1fr auto;
+    grid-template-areas:"date arrow" "title arrow" "tags arrow";
+    gap:3px 16px; padding:18px 0;
+  }
+  .row__tags { margin-top:4px; }
+
+  .post-cols { display:block; max-width:680px; }
+  .post-rail {
+    position:static; flex-direction:row; flex-wrap:wrap; align-items:center;
+    gap:10px 14px; font-size:13px; padding:16px 0;
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    margin-bottom:30px;
+  }
+  .post-rail__links { flex-direction:row; flex-wrap:wrap; }
+  .post__title { font-size:25px; }
+  .post-body h2 { font-size:17px; }
+}

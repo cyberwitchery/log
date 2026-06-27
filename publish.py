@@ -1,5 +1,7 @@
+import argparse
 import os
 import re
+import shutil
 import sys
 
 from email import utils
@@ -18,16 +20,32 @@ def upload_files():
 
     c = Client(opts)
     failed = []
-    for filename in os.listdir("out"):
-        remote_path = f"{remote_root}/{filename}"
-        try:
-            c.upload_sync(remote_path=remote_path, local_path=f"out/{filename}")
-        except (ConnectionException, NoConnection) as e:
-            print(f"ERROR: connection lost uploading {filename}: {e}", file=sys.stderr)
-            sys.exit(1)
-        except WebDavException as e:
-            print(f"ERROR: failed to upload {filename}: {e}", file=sys.stderr)
-            failed.append(filename)
+    for root_dir, _dirs, files in os.walk("out"):
+        rel_dir = os.path.relpath(root_dir, "out")
+        if rel_dir != ".":
+            remote_dir = f"{remote_root}/{rel_dir}"
+            try:
+                if not c.check(remote_dir):
+                    c.mkdir(remote_dir)
+            except (ConnectionException, NoConnection) as e:
+                print(f"ERROR: connection lost creating {rel_dir}: {e}", file=sys.stderr)
+                sys.exit(1)
+            except WebDavException as e:
+                print(f"ERROR: failed to create remote dir {rel_dir}: {e}", file=sys.stderr)
+                failed.append(rel_dir)
+                continue
+        for filename in files:
+            rel_path = os.path.normpath(os.path.join(rel_dir, filename))
+            local_path = os.path.join(root_dir, filename)
+            remote_path = f"{remote_root}/{rel_path}"
+            try:
+                c.upload_sync(remote_path=remote_path, local_path=local_path)
+            except (ConnectionException, NoConnection) as e:
+                print(f"ERROR: connection lost uploading {rel_path}: {e}", file=sys.stderr)
+                sys.exit(1)
+            except WebDavException as e:
+                print(f"ERROR: failed to upload {rel_path}: {e}", file=sys.stderr)
+                failed.append(rel_path)
     if failed:
         print(
             f"ERROR: {len(failed)} file(s) failed to upload: {', '.join(failed)}",
@@ -88,9 +106,9 @@ def render_post(tpl, args):
         f.write(pystache.render(tpl, args))
 
 
-def render_index(tpl, posts):
+def render_index(tpl, posts, alltags):
     with open("out/index.html", "w+", encoding="utf-8") as f:
-        f.write(pystache.render(tpl, {"posts": posts}))
+        f.write(pystache.render(tpl, {"posts": posts, "alltags": alltags}))
 
 
 def get_post(target):
@@ -136,11 +154,27 @@ def get_post(target):
     args["content"] = pypandoc.convert_text(content, "html", format="md")
 
     raw_tags = args.get("tags", [])
+    args["data_tags"] = ",".join(raw_tags)
     if raw_tags:
         args["has_tags"] = True
         args["tags"] = [{"name": t} for t in raw_tags]
 
     return args
+
+
+def build_alltags(posts):
+    counts = {}
+    for post in posts:
+        for tag in post.get("tags", []):
+            name = tag["name"]
+            counts[name] = counts.get(name, 0) + 1
+    ordered = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    return [{"name": name} for name, _ in ordered]
+
+
+def copy_assets():
+    if os.path.isdir("assets"):
+        shutil.copytree("assets", "out/assets", dirs_exist_ok=True)
 
 
 def get_posts():
@@ -159,7 +193,7 @@ TEMPLATES = [
 ]
 
 
-def main():
+def main(dry_run=False):
     missing = [t for t in TEMPLATES if not os.path.isfile(t)]
     if missing:
         print(f"ERROR: missing template file(s): {', '.join(missing)}", file=sys.stderr)
@@ -168,10 +202,12 @@ def main():
     os.makedirs("out", exist_ok=True)
     posts = get_posts()
 
+    copy_assets()
+
     with open("templates/index_layout.html", encoding="utf-8") as f:
         tpl = f.read()
 
-    render_index(tpl, posts)
+    render_index(tpl, posts, build_alltags(posts))
 
     with open("templates/layout.html", encoding="utf-8") as f:
         tpl = f.read()
@@ -189,8 +225,20 @@ def main():
 
     render_sitemap(tpl, posts)
 
+    if dry_run:
+        file_count = sum(len(files) for _, _, files in os.walk("out"))
+        print(f"dry run: wrote {file_count} file(s) to out/, skipping upload")
+        return
+
     upload_files()
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="build and upload the cyberwitchery log")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="build all files into out/ but do not upload",
+    )
+    args = parser.parse_args()
+    main(dry_run=args.dry_run)

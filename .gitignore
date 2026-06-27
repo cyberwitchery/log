@@ -2,3 +2,4 @@
 *.rss
 config.py
 wip
+out/
