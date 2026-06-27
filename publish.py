@@ -28,10 +28,15 @@ def upload_files():
                 if not c.check(remote_dir):
                     c.mkdir(remote_dir)
             except (ConnectionException, NoConnection) as e:
-                print(f"ERROR: connection lost creating {rel_dir}: {e}", file=sys.stderr)
+                print(
+                    f"ERROR: connection lost creating {rel_dir}: {e}", file=sys.stderr
+                )
                 sys.exit(1)
             except WebDavException as e:
-                print(f"ERROR: failed to create remote dir {rel_dir}: {e}", file=sys.stderr)
+                print(
+                    f"ERROR: failed to create remote dir {rel_dir}: {e}",
+                    file=sys.stderr,
+                )
                 failed.append(rel_dir)
                 continue
         for filename in files:
@@ -41,7 +46,9 @@ def upload_files():
             try:
                 c.upload_sync(remote_path=remote_path, local_path=local_path)
             except (ConnectionException, NoConnection) as e:
-                print(f"ERROR: connection lost uploading {rel_path}: {e}", file=sys.stderr)
+                print(
+                    f"ERROR: connection lost uploading {rel_path}: {e}", file=sys.stderr
+                )
                 sys.exit(1)
             except WebDavException as e:
                 print(f"ERROR: failed to upload {rel_path}: {e}", file=sys.stderr)
@@ -234,7 +241,9 @@ def main(dry_run=False):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="build and upload the cyberwitchery log")
+    parser = argparse.ArgumentParser(
+        description="build and upload the cyberwitchery log"
+    )
     parser.add_argument(
         "--dry-run",
         action="store_true",
