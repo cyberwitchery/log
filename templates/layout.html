@@ -4,7 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{title}} · cyberwitchery log</title>
-  {{#description}}<meta name="description" content="{{description}}">{{/description}}
+  <link rel="canonical" href="{{canonical}}">
+  <meta name="description" content="{{meta_description}}">
+  <meta name="author" content="cyberwitchery lab">
+
+  <!-- open graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="cyberwitchery lab">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="{{title}}">
+  <meta property="og:description" content="{{meta_description}}">
+  <meta property="og:url" content="{{canonical}}">
+  <meta property="article:published_time" content="{{date_iso}}">
+  <meta property="article:author" content="cyberwitchery lab">
+  {{#tags}}<meta property="article:tag" content="{{name}}">
+  {{/tags}}
+  <!-- twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{title}}">
+  <meta name="twitter:description" content="{{meta_description}}">
+
+  <script type="application/ld+json">{{{json_ld}}}</script>
 
   <!-- No-flash theme init: MUST run before the stylesheet paints -->
   <script>

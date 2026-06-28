@@ -1,4 +1,6 @@
 import argparse
+import html
+import json
 import os
 import re
 import shutil
@@ -10,6 +12,33 @@ from datetime import date, datetime, time, timezone
 import pystache
 import pypandoc
 import yaml
+
+
+BASE_URL = "https://cyberwitchery.com/log"
+SITE_NAME = "cyberwitchery lab"
+ORG = {"@type": "Organization", "name": SITE_NAME, "url": "https://cyberwitchery.com/"}
+INDEX_DESCRIPTION = (
+    "the cyberwitchery lab log: notes on network automation, security "
+    "tooling, and the projects we ship, including alembic."
+)
+
+
+def text_from_html(s):
+    s = re.sub(r"<[^>]+>", " ", s)
+    s = html.unescape(s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def truncate(s, limit=160):
+    if len(s) <= limit:
+        return s
+    return s[:limit].rsplit(" ", 1)[0].rstrip() + "…"
+
+
+def json_ld_script(data):
+    # ensure_ascii=False keeps utf-8; escape "<" so a value can't break out
+    # of the surrounding <script> element
+    return json.dumps(data, ensure_ascii=False).replace("<", "\\u003c")
 
 
 def upload_files():
@@ -114,8 +143,35 @@ def render_post(tpl, args):
 
 
 def render_index(tpl, posts, alltags):
+    blog_posts = [
+        {
+            "@type": "BlogPosting",
+            "headline": p.get("title", ""),
+            "url": p["canonical"],
+            "datePublished": p["date_iso"],
+        }
+        for p in posts
+    ]
+    json_ld = json_ld_script(
+        {
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "name": f"{SITE_NAME} log",
+            "url": f"{BASE_URL}/",
+            "description": INDEX_DESCRIPTION,
+            "inLanguage": "en",
+            "publisher": ORG,
+            "blogPost": blog_posts,
+        }
+    )
+    ctx = {
+        "posts": posts,
+        "alltags": alltags,
+        "index_description": INDEX_DESCRIPTION,
+        "json_ld": json_ld,
+    }
     with open("out/index.html", "w+", encoding="utf-8") as f:
-        f.write(pystache.render(tpl, {"posts": posts, "alltags": alltags}))
+        f.write(pystache.render(tpl, ctx))
 
 
 def get_post(target):
@@ -165,6 +221,28 @@ def get_post(target):
     if raw_tags:
         args["has_tags"] = True
         args["tags"] = [{"name": t} for t in raw_tags]
+
+    canonical = f"{BASE_URL}/{slug}.html"
+    args["canonical"] = canonical
+    description = (args.get("description") or "").strip()
+    if not description:
+        description = text_from_html(args["summary"])
+    args["meta_description"] = truncate(description)
+    args["json_ld"] = json_ld_script(
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": args.get("title", ""),
+            "description": args["meta_description"],
+            "url": canonical,
+            "mainEntityOfPage": canonical,
+            "datePublished": args["date_iso"],
+            "dateModified": args["date_iso"],
+            "author": ORG,
+            "publisher": ORG,
+            "keywords": ", ".join(raw_tags),
+        }
+    )
 
     return args
 
