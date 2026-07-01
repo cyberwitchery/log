@@ -17,7 +17,7 @@ medium, 1 large), then reviews them and emails a summary.
 
 it lives in the [cwl-agents](https://github.com/cyberwitchery/cwl-agents)
 repo, which is the bucket where i'm collecting the long-running claude code
-agents i use for the [cyber witchery lab](https://github.com/cyberwitchery)
+agents i use for the [cyberwitchery lab](https://github.com/cyberwitchery)
 org.
 
 ## why?
