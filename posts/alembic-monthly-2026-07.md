@@ -56,7 +56,8 @@ first, where a typo’d boolean took the default and, in the worst case, loaded
 an inventory into a database you didn’t mean to touch. the schema block
 followed. the remaining surfaces (inventory files, the object envelope, the
 map spec) are done on main and ship with the next release. i also made sure
-that errors are descriptive enough to be useful when debugging.
+that errors are descriptive enough to be useful when debugging. the ops-layer
+adapters picked up the same treatment for their config blocks.
 
 ## scale & perf
 
@@ -97,6 +98,9 @@ driver (zone transfer in, rfc 2136 dynamic updates out), several emitters
 (ansible, nornir, prometheus, dns) learned to read their existing artifacts
 back into the ir, an arista avd emitter joined for real, and ci now runs
 [batfish](https://www.batfish.org) over the fabric’s generated configs.
+both drive modes are gated in ci against the real thing: a live containerlab
+lab, and a real bind primary for the dns driver. the resumable-apply
+machinery gets driven through an actual injected failure there too.
 
 i’ll demo it publicly soon, but we can drive a full fabric with observability
 and all through plain alembic with ops plugins now, and it’s not a hassle.
@@ -110,7 +114,7 @@ their upstreams (nautobot 3.1.6, infrahub 1.10.0), and infrahub-erd 0.3.1
 fixed generics rendering and unified its four output formats behind one
 renderer.
 
-we are still two patch versions behind netbox upstrea, on netbox.rs, a fact i
+we are still two patch versions behind netbox upstream on netbox.rs, a fact i
 want to rectify this weekend. just missed the deadline for this dev log, but oh
 well. can’t have it all.
 
@@ -128,6 +132,12 @@ client library for rust to put underneath it. i’m very excited.
 less people, but contributors: a good share of the month’s smaller fixes were
 opened as prs by [heartbeat](/log/heartbeat), the org’s cyclical claude code
 agent, and reviewed by yours truly before merge. it kept me busy.
+
+## health
+
+- the published walkthroughs and case studies now execute in ci, next to the
+  fabric golden-file e2e from last month, so the documented flows are checked
+  against the binary on every merge.
 
 ## on deck
 
