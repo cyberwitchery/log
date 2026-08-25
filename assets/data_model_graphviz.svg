@@ -1,0 +1,54 @@
+<svg width="318pt" height="133pt" viewBox="0.00 0.00 317.59 132.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 128.8)">
+<title>fra1</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-128.8 313.59,-128.8 313.59,4 -4,4"/>
+<!-- leaf01 -->
+<g id="node1" class="node">
+<title>leaf01</title>
+<ellipse fill="none" stroke="#2ca02c" cx="89.5" cy="-18" rx="35.16" ry="18"/>
+<text text-anchor="middle" x="89.5" y="-13.8" font-family="Times,serif" font-size="14.00">leaf01</text>
+</g>
+<!-- leaf02 -->
+<g id="node2" class="node">
+<title>leaf02</title>
+<ellipse fill="none" stroke="#2ca02c" cx="221.5" cy="-18" rx="35.16" ry="18"/>
+<text text-anchor="middle" x="221.5" y="-13.8" font-family="Times,serif" font-size="14.00">leaf02</text>
+</g>
+<!-- spine01 -->
+<g id="node3" class="node">
+<title>spine01</title>
+<polygon fill="none" stroke="#1f77b4" points="75.28,-124.8 15.73,-124.8 15.73,-88.8 75.28,-88.8 75.28,-124.8"/>
+<text text-anchor="middle" x="45.5" y="-102.6" font-family="Times,serif" font-size="14.00">spine01</text>
+</g>
+<!-- spine01&#45;&#45;leaf01 -->
+<g id="edge1" class="edge">
+<title>spine01--leaf01</title>
+<path fill="none" stroke="black" d="M17.1,-88.46C4.79,-78.69 -5.16,-66.06 2.97,-54 14.75,-36.53 36.88,-27.78 55.81,-23.4"/>
+<text text-anchor="middle" x="35.24" y="-58.2" font-family="Times,serif" font-size="14.00">eth1 -- eth1</text>
+</g>
+<!-- spine01&#45;&#45;leaf02 -->
+<g id="edge2" class="edge">
+<title>spine01--leaf02</title>
+<path fill="none" stroke="black" d="M55.31,-88.44C62.62,-77.02 73.63,-62.65 86.97,-54 103.63,-43.2 154.43,-31.83 188.61,-25.08"/>
+<text text-anchor="middle" x="119.24" y="-58.2" font-family="Times,serif" font-size="14.00">eth2 -- eth1</text>
+</g>
+<!-- spine02 -->
+<g id="node4" class="node">
+<title>spine02</title>
+<polygon fill="none" stroke="#1f77b4" points="251.28,-124.8 191.73,-124.8 191.73,-88.8 251.28,-88.8 251.28,-124.8"/>
+<text text-anchor="middle" x="221.5" y="-102.6" font-family="Times,serif" font-size="14.00">spine02</text>
+</g>
+<!-- spine02&#45;&#45;leaf01 -->
+<g id="edge3" class="edge">
+<title>spine02--leaf01</title>
+<path fill="none" stroke="black" d="M198.07,-88.66C190.61,-83.07 182.37,-76.76 174.97,-70.8 166.07,-63.63 164.94,-60.45 155.5,-54 142.76,-45.29 127.61,-37.11 115.03,-30.86"/>
+<text text-anchor="middle" x="207.24" y="-58.2" font-family="Times,serif" font-size="14.00">eth1 -- eth2</text>
+</g>
+<!-- spine02&#45;&#45;leaf02 -->
+<g id="edge4" class="edge">
+<title>spine02--leaf02</title>
+<path fill="none" stroke="black" d="M235,-88.57C238.46,-83.18 241.71,-77.01 243.5,-70.8 245.57,-63.63 245.57,-61.17 243.5,-54 241.6,-47.38 238.02,-40.8 234.31,-35.17"/>
+<text text-anchor="middle" x="277.32" y="-58.2" font-family="Times,serif" font-size="14.00">eth2 -- eth2</text>
+</g>
+</g>
+</svg>
