@@ -40,7 +40,7 @@ for.
 $ alembic import --backend netbox -f schema.yaml -o ir.json
 ```
 
-# step 2 - massaging the data
+# step 2 - transforming the data
 
 looking at the ir and its object, we can see that each device has the
 following field:
@@ -49,10 +49,10 @@ following field:
 "primary_ip4": "30000000-0000-0000-0000-000000000002"
 ```
 
-this is a *reference* to an ip
-address object, because that's how netbox organizes its data. what the
-prometheus adapter wants is a literal ip address (e.g "165.10.20.3")
-on a field called just `primary_ip`.
+this is a *reference* to an ip address object, because that's how
+netbox organizes its data. what the prometheus adapter wants is a
+literal ip address (e.g "165.10.20.3") on a field called just
+`primary_ip`.
 
 we're in alembic territories right now though, and we are free to
 transform this as we see fit. the main way to do such things is
@@ -69,15 +69,15 @@ now, the object from above (the one that shares the exact same uid)
 has a field that looks like this instead:
 
 ```json
-"primary_ip": "198.51.100.102",
+"primary_ip": "198.51.100.102"
 ```
 
 # step 3 - generating the prometheus configuration
 
-with the data in the correct shape and form, we're ready to run the
-prometheus adapter, part of `alembic-ops`. to make it extra easy to
-run, we put its configuration into our `plugins` directory, in a file
-named `prometheus.yaml`:
+with the data in the correct shape, we're ready to run the prometheus
+adapter, which is part of `alembic-ops`. to make it extra easy to run,
+we put its configuration into our `plugins` directory, in a file named
+`prometheus.yaml`:
 
 ```yaml
 backend: external
@@ -107,35 +107,41 @@ this emits the three configuration files required by prometheus
 # step 4 - start prometheus
 
 we're now ready to collect metrics from the devices. given that we
-have installed prometheus on our machine, we can run it with the
-configuration emitted by alembic:
+have [installed
+prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
+on our machine, we can run it with the configuration emitted by
+alembic:
 
 ```bash
 $ prometheus --config.file=./out/prometheus.yml
 ```
 
 after booting up, we can go to `http://localhost:9090` in our browser
-and start inspecting the collected metrics. to learn more about that,
-see [the prometheus
-documentation](https://prometheus.io/docs/introduction/overview/) for
-more information.
+to inspect the metrics as they are collected. to learn more about how
+to do that, see [the prometheus
+documentation](https://prometheus.io/docs/introduction/overview/).
 
 # step 5 - visualize using grafana
 
-to get a nice dashboard worthy of your sci-fi movie of choice, we turn
-to grafana. inside its web interface we can add a prometheus data
-source by entering the address to the running instance. to actually get various widgets like
-graphs and gauges, the recommended way is to download something like
-"Node Exporter Full" from the [grafana dashboard
-collection](https://grafana.com/grafana/dashboards/). after pressing
-"Build a dashboard" for the prometheus datasource inside grafana, import the
-interface file to get something like this:
+to get a nice dashboard (worthy of your sci-fi movie of choice) we
+turn to grafana. to get various widgets like graphs and gauges, the
+recommended way is to download something like "Node Exporter Full"
+from the [grafana dashboard
+collection](https://grafana.com/grafana/dashboards/). inside the
+grafana web interface we can add a prometheus data source by entering
+the address to the running instance, and then press "Build a
+dashboard". inside the dasboard builder we import the interface file
+from earlier, to get something like this:
 
 ![](./img/dashboard.png)
 
 # conclusions
 
-
+so there you have it, visualization of your your whole system in five
+easy steps. the main take away (as always with alembic) is that once
+we have the information about our system in ir, we can do a lot of
+neat things that otherwise would have taken a lot of bespoke scripting
+or data scraping.
 
 
 [^1]: this is a footnote
