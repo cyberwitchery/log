@@ -137,7 +137,7 @@ the address to the running instance, and then press "Build a
 dashboard". inside the dasboard builder we import the interface file
 from earlier, to get something like this:
 
-![](./img/dashboard.png)
+![fig. 1: a grafana dashboard](./assets/dashboard.png)
 
 # conclusions
 
