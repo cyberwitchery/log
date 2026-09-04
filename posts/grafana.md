@@ -14,11 +14,14 @@ links:
       url: https://grafana.com
 ---
 
+*possible disclaimer that this requires access to the prometheus
+adapter which might be only accessible to paying customers?*
+
 if you are an alembic user, you probably have a lot of devices to keep
 track of. and in that case, you're probably interested in knowing the
 status of said devices,like their cpu usage, io rate, or their amount
 of free memory. `prometheus` is an excellent and popular tool for
-collecting such metrics, but it can be cumbersome to set up. you need
+collecting such metrics, but it can be cumbersome to set up; you need
 to configure it with the ip addresses of all the devices to monitor,
 and if anything changes you need to make sure the configuration is
 kept up to date. since alembic already can keep track of your complete
@@ -42,31 +45,31 @@ $ alembic import --backend netbox -f schema.yaml -o ir.json
 
 # step 2 - transforming the data
 
-looking at the ir and its object, we can see that each device has the
-following field:
+looking at the ir and its objects, we can see that each device has the
+following kind of field:
 
 ```json
 "primary_ip4": "30000000-0000-0000-0000-000000000002"
 ```
 
-this is a *reference* to an ip address object, because that's how
+this is a reference to an ip address object, because that's how
 netbox organizes its data. what the prometheus adapter wants is a
-literal ip address (e.g "165.10.20.3") on a field called just
+literal ip address (e.g "165.10.20.3") stored in a field called just
 `primary_ip`.
 
-we're in alembic territories right now though, and we are free to
-transform this as we see fit. the main way to do such things is
+since we're in alembic territories right now though, we are free to
+transform this data as we see fit. the main way to do such things is
 through the `map` command. it takes one or more transformation rules
 and applies those to the matching objects in the ir, producing a new
 file. we will use a ready-made file with transformations called
-[`resolve.yaml`](TODO) and apply it like so:
+[`resolve.yaml`](TODO) and apply it like so[^1]:
 
 ```bash
 $ workspace alembic map -f ir.json --spec resolve.yaml -o resolved.json
 ```
 
-now, the object from above (the one that shares the exact same uid)
-has a field that looks like this instead:
+now, the object from above (i.e. the one that has the exact same uid)
+contains a field that looks like this instead:
 
 ```json
 "primary_ip": "198.51.100.102"
@@ -75,13 +78,13 @@ has a field that looks like this instead:
 # step 3 - generating the prometheus configuration
 
 with the data in the correct shape, we're ready to run the prometheus
-adapter, which is part of `alembic-ops`. to make it extra easy to run,
-we put its configuration into our `plugins` directory, in a file named
-`prometheus.yaml`:
+adapter (first make sure that its binary is located somewhere on your
+machine). to make it extra easy to run, we put its configuration into
+our `plugins` directory, in a file named `prometheus.yaml`:
 
 ```yaml
 backend: external
-command: path/to/alembic-ops/target/debug/alembic-adapter-prometheus
+command: path/to/alembic-adapter-prometheus
 args: []
 env: {}
 timeout_seconds: 10
@@ -102,13 +105,14 @@ $ alembic plan --backend prometheus -f resolved.json -o plan.json
 $ alembic apply --backend prometheus --plan plan.json --allow-delete
 ```
 
-this emits the three configuration files required by prometheus
+this emits three configuration files required by prometheus;
+`targets.json`, `rules.yml` & `prometheus.yml`.
 
 # step 4 - start prometheus
 
-we're now ready to collect metrics from the devices. given that we
-have [installed
-prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
+we're ready to collect metrics from the devices. given that prometheus
+has been
+[installed](https://prometheus.io/docs/prometheus/latest/installation/)
 on our machine, we can run it with the configuration emitted by
 alembic:
 
@@ -116,17 +120,17 @@ alembic:
 $ prometheus --config.file=./out/prometheus.yml
 ```
 
-after booting up, we can go to `http://localhost:9090` in our browser
-to inspect the metrics as they are collected. to learn more about how
-to do that, see [the prometheus
-documentation](https://prometheus.io/docs/introduction/overview/).
+after booting up, we can go to `http://localhost:9090` in a web
+browser to inspect the metrics as they are collected. to learn more
+about how prometheus queries work, see their
+[documentation](https://prometheus.io/docs/introduction/overview/).
 
 # step 5 - visualize using grafana
 
 to get a nice dashboard (worthy of your sci-fi movie of choice) we
-turn to grafana. to get various widgets like graphs and gauges, the
-recommended way is to download something like "Node Exporter Full"
-from the [grafana dashboard
+turn to grafana. to not have to manually set up various common widgets
+like graphs and gauges, the recommended way is to download something
+like "Node Exporter Full" from the [grafana dashboard
 collection](https://grafana.com/grafana/dashboards/). inside the
 grafana web interface we can add a prometheus data source by entering
 the address to the running instance, and then press "Build a
@@ -144,4 +148,5 @@ neat things that otherwise would have taken a lot of bespoke scripting
 or data scraping.
 
 
-[^1]: this is a footnote
+[^1]: this also requires the starlark file `transforms.star` to be
+      present, get it [here]().
