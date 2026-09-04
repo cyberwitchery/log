@@ -36,7 +36,7 @@ data from your backend. in this example we're using netbox, but this
 could of course be any of the dcim systems that alembic has adapters
 for.
 
-```
+```bash
 $ alembic import --backend netbox -f schema.yaml -o ir.json
 ```
 
@@ -45,7 +45,7 @@ $ alembic import --backend netbox -f schema.yaml -o ir.json
 looking at the ir and its object, we can see that each device has the
 following field:
 
-```
+```json
 "primary_ip4": "30000000-0000-0000-0000-000000000002"
 ```
 
@@ -61,14 +61,14 @@ and applies those to the matching objects in the ir, producing a new
 file. we will use a ready-made file with transformations called
 [`resolve.yaml`](TODO) and apply it like so:
 
-```
+```bash
 $ workspace alembic map -f ir.json --spec resolve.yaml -o resolved.json
 ```
 
 now, the object from above (the one that shares the exact same uid)
 has a field that looks like this instead:
 
-```
+```json
 "primary_ip": "198.51.100.102",
 ```
 
@@ -79,7 +79,7 @@ prometheus adapter, part of `alembic-ops`. to make it extra easy to
 run, we put its configuration into our `plugins` directory, in a file
 named `prometheus.yaml`:
 
-```
+```yaml
 backend: external
 command: path/to/alembic-ops/target/debug/alembic-adapter-prometheus
 args: []
@@ -94,11 +94,11 @@ setup:
 now we can run it just like a built-in adapter, first generating a
 plan and then applying it:
 
-```
+```bash
 $ alembic plan --backend prometheus -f resolved.json -o plan.json
 ```
 
-```
+```bash
 $ alembic apply --backend prometheus --plan plan.json --allow-delete
 ```
 
@@ -110,11 +110,32 @@ we're now ready to collect metrics from the devices. given that we
 have installed prometheus on our machine, we can run it with the
 configuration emitted by alembic:
 
+```bash
+$ prometheus --config.file=./out/prometheus.yml
 ```
 
-```
+after booting up, we can go to `http://localhost:9090` in our browser
+and start inspecting the collected metrics. to learn more about that,
+see [the prometheus
+documentation](https://prometheus.io/docs/introduction/overview/) for
+more information.
 
 # step 5 - visualize using grafana
+
+to get a nice dashboard worthy of your sci-fi movie of choice, we turn
+to grafana. inside its web interface we can add a prometheus data
+source by entering the address to the running instance. to actually get various widgets like
+graphs and gauges, the recommended way is to download something like
+"Node Exporter Full" from the [grafana dashboard
+collection](https://grafana.com/grafana/dashboards/). after pressing
+"Build a dashboard" for the prometheus datasource inside grafana, import the
+interface file to get something like this:
+
+![](./img/dashboard.png)
+
+# conclusions
+
+
 
 
 [^1]: this is a footnote
