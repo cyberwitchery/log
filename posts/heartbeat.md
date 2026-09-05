@@ -1,6 +1,7 @@
 ---
 title: "heartbeat: a cyclical contributor bot for your github org"
 date: 2026-04-18
+author: "Veit Heller"
 slug: heartbeat
 tags: [ai, agents, tooling, release]
 summary: "a cron-driven claude code agent that opens and reviews a small slate of prs each cycle<br/>`git clone git@github.com:cyberwitchery/cwl-agents`"

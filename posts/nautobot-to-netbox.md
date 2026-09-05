@@ -1,6 +1,7 @@
 ---
 title: "nautobot to netbox, there and back again"
 date: 2026-08-09
+author: "Veit Heller"
 slug: nautobot-to-netbox
 tags: [alembic, network automation, tooling]
 summary: "the two tools don’t agree on a model. locations vs sites, status as a reference vs a string. a migration between them is a translation rather than an export. alembic has a map that does it.<br/>`cargo install alembic-cli`"

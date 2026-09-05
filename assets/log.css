@@ -188,7 +188,7 @@ a { color:inherit; text-decoration:none; }
   display:flex; flex-direction:column; gap:20px;
   font-size:12px;
 }
-.post-rail__date { color:var(--faint); }
+.post-rail__date, .post-rail__author { color:var(--faint); }
 .post-rail__tags { display:flex; flex-wrap:wrap; gap:6px; }
 .post-rail__tags span {
   font-size:11px; color:var(--chip-fg); background:var(--chip-bg);

@@ -1,6 +1,7 @@
 ---
 title: "unsafe-budget: an unsafe code budget gate for ci pipelines"
 date: 2026-02-22
+author: "Veit Heller"
 slug: unsafe-budget
 tags: [rust, go, supply chain, tooling, release]
 summary: "keeps the unsafety demons out<br/>`cargo install unsafe-budget`"

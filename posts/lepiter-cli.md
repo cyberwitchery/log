@@ -1,6 +1,7 @@
 ---
 title: "lepiter-cli: a terminal editor for lepiter knowledge bases"
 date: 2026-03-23
+author: "Veit Heller"
 slug: lepiter-cli
 tags: [tooling, release]
 summary: "browse, search, and edit lepiter knowledge bases from your terminal<br/>`cargo install lepiter-cli`"

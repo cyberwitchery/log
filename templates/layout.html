@@ -6,7 +6,7 @@
   <title>{{title}} · cyberwitchery log</title>
   <link rel="canonical" href="{{canonical}}">
   <meta name="description" content="{{meta_description}}">
-  <meta name="author" content="cyberwitchery lab">
+  <meta name="author" content="{{author}}">
 
   <!-- open graph -->
   <meta property="og:type" content="article">
@@ -16,7 +16,7 @@
   <meta property="og:description" content="{{meta_description}}">
   <meta property="og:url" content="{{canonical}}">
   <meta property="article:published_time" content="{{date_iso}}">
-  <meta property="article:author" content="cyberwitchery lab">
+  <meta property="article:author" content="{{author}}">
   {{#tags}}<meta property="article:tag" content="{{name}}">
   {{/tags}}
   <!-- twitter -->
@@ -68,6 +68,7 @@
       <div class="post-cols">
         <aside class="post-rail">
           <div class="post-rail__date">{{date_iso}}</div>
+          <div class="post-rail__author">{{author}}</div>
           {{#has_tags}}<div class="post-rail__tags">{{#tags}}<span>#{{name}}</span>{{/tags}}</div>{{/has_tags}}
           {{#links?}}<div class="post-rail__links">{{#links}}<a href="{{url}}">{{label}} ↗</a>{{/links}}</div>{{/links?}}
         </aside>

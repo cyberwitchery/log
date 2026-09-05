@@ -1,6 +1,7 @@
 ---
 title: "contextual-encoder: output encoding for xss defense"
 date: 2026-06-19
+author: "Veit Heller"
 slug: contextual-encoder
 tags: [security, rust, tooling, release]
 summary: "encode untrusted strings for the context they land in<br/>`cargo add contextual-encoder`"

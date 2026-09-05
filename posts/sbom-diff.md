@@ -1,6 +1,7 @@
 ---
 title: "sbom-diff: comparing software bills of materials"
 date: 2026-02-17
+author: "Veit Heller"
 slug: sbom-diff
 tags: [supply chain, tooling, release]
 summary: "diff your sboms, catch surprises before they ship<br/>`cargo install sbom-diff`"

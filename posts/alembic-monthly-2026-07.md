@@ -1,6 +1,7 @@
 ---
 title: "alembic dev log, july 2026"
 date: 2026-08-01
+author: "Veit Heller"
 slug: alembic-dev-log-2026-07
 tags: [alembic, network automation, newsletter]
 summary: "three releases, a see-before-write for schema, and files that refuse typos.<br/>`cargo install alembic-cli`"

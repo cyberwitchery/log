@@ -1,6 +1,7 @@
 ---
 title: "every pull a lesson: moral history in a multi-turn trolley game"
 date: 2026-08-18
+author: "Veit Heller"
 slug: cw001-every-pull-a-lesson
 tags: [papers, game theory, ethics]
 summary: "the first note in the cyberwitchery paper series. what happens to the trolley problem when the people on the tracks remember what you did, and once held the lever themselves.<br/>`CW:001 · lab note · v1.0`"

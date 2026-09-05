@@ -1,6 +1,7 @@
 ---
 title: "diagrams from your data model"
 date: 2026-08-25
+author: "Veit Heller"
 slug: diagrams-from-your-data-model
 tags: [alembic, network automation, tooling]
 summary: "architecture diagrams drift because they’re drawn by hand. the ones in this post are emitted from the same model that drives the fabric. text-first, diffable, regenerated on every run.<br/>`cargo install alembic-cli`"

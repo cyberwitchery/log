@@ -149,6 +149,7 @@ def render_index(tpl, posts, alltags):
             "headline": p.get("title", ""),
             "url": p["canonical"],
             "datePublished": p["date_iso"],
+            "author": p["author_entity"],
         }
         for p in posts
     ]
@@ -187,9 +188,20 @@ def get_post(target):
         )
         return None
 
-    if "date" not in args:
+    missing_fields = [
+        field for field in ("title", "date", "author") if not args.get(field)
+    ]
+    if missing_fields:
         print(
-            f"WARNING: skipping {target}: missing required 'date' field in frontmatter",
+            f"WARNING: skipping {target}: missing required frontmatter field(s): "
+            f"{', '.join(missing_fields)}",
+            file=sys.stderr,
+        )
+        return None
+
+    if not isinstance(args["author"], str):
+        print(
+            f"WARNING: skipping {target}: 'author' must be a string",
             file=sys.stderr,
         )
         return None
@@ -224,6 +236,7 @@ def get_post(target):
 
     canonical = f"{BASE_URL}/{slug}.html"
     args["canonical"] = canonical
+    args["author_entity"] = {"@type": "Person", "name": args["author"]}
     description = (args.get("description") or "").strip()
     if not description:
         description = text_from_html(args["summary"])
@@ -238,7 +251,7 @@ def get_post(target):
             "mainEntityOfPage": canonical,
             "datePublished": args["date_iso"],
             "dateModified": args["date_iso"],
-            "author": ORG,
+            "author": args["author_entity"],
             "publisher": ORG,
             "keywords": ", ".join(raw_tags),
         }

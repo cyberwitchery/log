@@ -1,6 +1,7 @@
 ---
 title: "writing an external adapter for alembic"
 date: 2026-07-07
+author: "Veit Heller"
 slug: writing-an-external-adapter
 tags: [alembic, network automation, tooling]
 summary: "an external adapter is a process alembic spawns that speaks json over stdio. we offer sdks in rust and python<br/>`pip install alembic-adapter-sdk`"
