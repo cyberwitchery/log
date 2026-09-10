@@ -10,8 +10,8 @@ links:
       url: https://github.com/cyberwitchery/alembic
     - label: docs
       url: https://github.com/cyberwitchery/alembic/tree/main/docs
-    - label: crates.io
-      url: https://crates.io/crates/alembic-cli
+    - label: netbox
+      url: https://netboxlabs.com/docs/netbox/
 ---
 
 picture this; you're the person in charge of picking a suitable dcim
@@ -48,16 +48,17 @@ by far!
 
 # trying out a backend
 
-so, let's say that we want to start by trying out [netbox](). this is
-a good first target, since it requires very little extra work to set
-up. the inventory file from above isn't immediately applicable to
-netbox though, first we have to manipulate it a bit. in this case, the
-only problem is how netbox handles ip addresses. in contrast to the
-vendor neutral schema from above, the interface assigned to an ip is
-stored under the key `assigned_object` rather than
-`assigned_interface`. this discrepancy must be resolved before we can
-funnel the data into our netbox instance. this is what `alembic map`
-is for!
+so, let's say that we want to start by trying out
+[netbox](https://netboxlabs.com/docs/netbox/). this is a good first
+target, since it requires very little extra work to set up. the
+inventory file from above isn't immediately applicable to netbox
+though, first we have to manipulate it a bit. in this case, the only
+problem is how netbox handles ip addresses. in contrast to the vendor
+neutral schema from above, the interface assigned to an ip is stored
+under the key `assigned_object` rather than `assigned_interface`. this
+discrepancy must be resolved before we can funnel the data into our
+netbox instance. this is what `alembic map` is for, here's a snippet
+from `/examples/walkthroughs/eval-fabric-netbox.yaml`:
 
 ```
 rules:
@@ -74,5 +75,5 @@ rules:
     emit: passthrough
 ```
 
-TODO: add `map-to-netbox.yaml` into examples so that it can be
-referred to here
+after running this through `alembic map` we get a new ir file, which
+can be planned and applied.
