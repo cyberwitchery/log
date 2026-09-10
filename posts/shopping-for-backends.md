@@ -41,7 +41,7 @@ $ cargo run --bin alembic-file-generator -- -k inventory -o inventory.yaml
 ```
 
 or we could just use one of the examples from the `alembic` repo,
-e.g. [we_need_to_create_this_schema.yaml](). this contains a full
+e.g. `/examples/walkthroughs/eval-fabric.yaml`. this contains a full
 backend-agnostic spec for a somewhat realistic (but manageable)
 system. if you don't know which option to go with, this is the easiest
 by far!
@@ -52,5 +52,27 @@ so, let's say that we want to start by trying out [netbox](). this is
 a good first target, since it requires very little extra work to set
 up. the inventory file from above isn't immediately applicable to
 netbox though, first we have to manipulate it a bit. in this case, the
-only problem is how netbox handles ip addresses. good old `alembic
-map` to the rescue:
+only problem is how netbox handles ip addresses. in contrast to the
+vendor neutral schema from above, the interface assigned to an ip is
+stored under the key `assigned_object` rather than
+`assigned_interface`. this discrepancy must be resolved before we can
+funnel the data into our netbox instance. this is what `alembic map`
+is for!
+
+```
+rules:
+  - name: rename-assignment
+    match: ipam.ip_address
+    emit:
+      type: ipam.ip_address
+      key: {address: "${key.address}"}
+      attrs:
+        address: "${attrs.address}"
+        assigned_object: "${attrs.assigned_interface}"
+  - name: rest
+    match: "*"
+    emit: passthrough
+```
+
+TODO: add `map-to-netbox.yaml` into examples so that it can be
+referred to here
