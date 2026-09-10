@@ -12,6 +12,8 @@ links:
       url: https://github.com/cyberwitchery/alembic/tree/main/docs
     - label: netbox
       url: https://netboxlabs.com/docs/netbox/
+    - label: nautobot
+      url: https://github.com/nautobot/nautobot
 ---
 
 picture this; you're the person in charge of picking a suitable dcim
@@ -37,28 +39,47 @@ is included in the alembic repo. this gives us the ability to define
 exactly how many objects our inventory should include:
 
 ```bash
-$ cargo run --bin alembic-file-generator -- -k inventory -o inventory.yaml
+$ cargo run --bin alembic-file-generator -- --kind inventory
 ```
 
-or we could just use one of the examples from the `alembic` repo,
-e.g. `/examples/walkthroughs/eval-fabric.yaml`. this contains a full
-backend-agnostic spec for a somewhat realistic (but manageable)
-system. if you don't know which option to go with, this is the easiest
-by far!
+this will generate an inventory file called `inventory.yaml`, check it
+out before we move on!
 
-# trying out a backend
+# trying out a backend (netbox)
 
 so, let's say that we want to start by trying out
 [netbox](https://netboxlabs.com/docs/netbox/). this is a good first
-target, since it requires very little extra work to set up. the
-inventory file from above isn't immediately applicable to netbox
-though, first we have to manipulate it a bit. in this case, the only
-problem is how netbox handles ip addresses. in contrast to the vendor
-neutral schema from above, the interface assigned to an ip is stored
-under the key `assigned_object` rather than `assigned_interface`. this
-discrepancy must be resolved before we can funnel the data into our
-netbox instance. this is what `alembic map` is for, here's a snippet
-from `/examples/walkthroughs/eval-fabric-netbox.yaml`:
+target, since it requires no extra work to set up. the
+inventory file from above is immediately applicable to netbox, we just
+need to make a plan and apply it like so:
+
+```bash
+$ alembic plan --backend netbox --file inventory.yaml --output plan.json
+```
+
+```bash
+$ alembic apply --backend netbox --plan plan.json
+```
+
+inspecting our local netbox inventory through the web interface we can
+see that things are in order, e.g:
+
+![fig. 1: netbox cables](./assets/netbox_cables.png)
+
+# slightly trickier
+
+if you didn't generate the inventory using the
+`alembic-file-generator` you might have the data in a slightly
+incorrect format. for example, maybe you're using something like
+`/examples/walkthroughs/eval-fabric.yaml` in this repo. this file contains a
+backend-agnostic spec for a very small system.
+
+in this case, there's a small discrepancy in how netbox handles ip
+adresses compared to how they are stored in the schema. the interface
+assigned to an ip is stored under the key `assigned_object` rather
+than `assigned_interface`. to solve this, we can use `alembic
+map` which transforms data. here's the relevant snippet from
+`/examples/walkthroughs/eval-fabric-netbox.yaml`
 
 ```
 rules:
@@ -75,10 +96,17 @@ rules:
     emit: passthrough
 ```
 
-after running this through `alembic map` we get a new ir file, which
-can be planned and applied.
+in short, this transforms all objects of type `ipam.ip_address` and
+leaves anything else as-is.
 
-inspecting our local netbox inventory through the web interface we can
-see that things are in order, e.g:
+we can use this to generate a new file with ir that has the correct
+keys for netbox:
 
-![fig. 1: netbox cables](./assets/netbox_cables.png)
+```bash
+alembic map --file ./examples/walkthroughs/eval-fabric.yaml --spec ./examples/walkthroughs/eval-fabric-netbox.yaml -o inventory.json
+```
+
+this new file can be planned and applied just like the file generated
+by alembic-file-generator above!
+
+# other backends (nautobot)
