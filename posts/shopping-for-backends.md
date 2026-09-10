@@ -77,3 +77,8 @@ rules:
 
 after running this through `alembic map` we get a new ir file, which
 can be planned and applied.
+
+inspecting our local netbox inventory through the web interface we can
+see that things are in order, e.g:
+
+![fig. 1: netbox cables](./assets/netbox_cables.png)
