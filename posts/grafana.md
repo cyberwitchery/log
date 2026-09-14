@@ -1,6 +1,6 @@
 ---
 title: "metrics for free: alembic <3 prometheus"
-date: 2026-09-03
+date: 2026-09-29
 slug: grafana
 tags: [network automation, tooling, release]
 summary: "use alembic together with prometheus and grafana to easily collect and visualize metrics about all of the devices in your system"
@@ -12,22 +12,23 @@ links:
       url: https://prometheus.io
     - label: grafana
       url: https://grafana.com
+author: Erik Svedäng
 ---
 
 *possible disclaimer that this requires access to the prometheus
 adapter which might be only accessible to paying customers?*
 
 if you are an alembic user, you probably have a lot of devices to keep
-track of. and in that case, you're probably interested in knowing the
-status of said devices,like their cpu usage, io rate, or their amount
-of free memory. `prometheus` is an excellent and popular tool for
-collecting such metrics, but it can be cumbersome to set up; you need
-to configure it with the ip addresses of all the devices to monitor,
-and if anything changes you need to make sure the configuration is
-kept up to date. since alembic already can keep track of your complete
-inventory (in a backend agnostic way) it can be used to solve this
-problem in a very neat and convenient way. in the following post we're
-going to look at how to do this in practice!
+track of. and in that case, you're interested in knowing the status of
+said devices; like their cpu usage, io rate, or their amount of free
+memory. `prometheus` is an excellent and popular tool for collecting
+such metrics, but it can be cumbersome to set up; you need to
+configure it with the ip addresses of all the devices to monitor, and
+if anything changes you need to make sure the configuration is kept up
+to date. since alembic already can keep track of your complete
+inventory (with a backend-agnostic representation) it can be used to
+solve this problem in a very neat and convenient way. in the following
+post we're going to look at how to do this in practice!
 
 
 # step 1 - importing your data
