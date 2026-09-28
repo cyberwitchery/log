@@ -15,8 +15,8 @@ links:
 author: Erik Svedäng
 ---
 
-*possible disclaimer that this requires access to the prometheus
-adapter which might be only accessible to paying customers?*
+**disclaimer:** this makes use of certain features only available in
+alembic ops, the commercial layer on top of alembic.
 
 if you are an alembic user, you probably have a lot of devices to keep
 track of. and in that case, you're interested in knowing the status of
@@ -41,7 +41,7 @@ could of course be any of the dcim systems that alembic has adapters
 for.
 
 ```bash
-$ alembic import --backend netbox -f schema.yaml -o ir.json
+$ alembic import --backend netbox -f schema.yaml -o ir.yaml
 ```
 
 # step 2 - transforming the data
@@ -50,15 +50,16 @@ looking at the ir and its objects, we can see that each device has the
 following kind of field:
 
 ```json
-"primary_ip4": "30000000-0000-0000-0000-000000000002"
+    "primary_ip4": "30000000-0000-0000-0000-000000000002"
 ```
 
 this is a reference to an ip address object, because that's how
 netbox organizes its data. what the prometheus adapter wants is a
 literal ip address (e.g "165.10.20.3") stored in a field called just
-`primary_ip`.
+`primary_ip`. we also need to use this ip as the primary key for the
+devices, rather than relying on its name.
 
-since we're in alembic territories right now though, we are free to
+since we're in alembic territories now though, we are free to
 transform this data as we see fit. the main way to do such things is
 through the `map` command. it takes one or more transformation rules
 and applies those to the matching objects in the ir, producing a new
@@ -66,7 +67,7 @@ file. we will use a ready-made file with transformations called
 [`resolve.yaml`](TODO) and apply it like so[^1]:
 
 ```bash
-$ workspace alembic map -f ir.json --spec resolve.yaml -o resolved.json
+$ alembic map -f ir.json --spec resolve.yaml -o resolved.json
 ```
 
 now, the object from above (i.e. the one that has the exact same uid)
