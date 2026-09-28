@@ -1,6 +1,6 @@
 ---
 title: "metrics for free: alembic <3 prometheus"
-date: 2026-09-30
+date: 2026-09-28
 slug: grafana
 tags: [network automation, tooling, alembic]
 summary: "use alembic together with prometheus and grafana to easily collect and visualize metrics about all of the devices in your system"
