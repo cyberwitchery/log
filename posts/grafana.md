@@ -64,7 +64,7 @@ transform this data as we see fit. the main way to do such things is
 through the `map` command. it takes one or more transformation rules
 and applies those to the matching objects in the ir, producing a new
 file. we will use a ready-made file with transformations called
-[`resolve.yaml`](TODO) and apply it like so[^1]:
+[`resolve.yaml`](./assets/grafana/resolve.yaml) and apply it like so[^1]:
 
 ```bash
 $ alembic map -f ir.json --spec resolve.yaml -o resolved.json
@@ -75,6 +75,18 @@ contains a field that looks like this instead:
 
 ```json
 "primary_ip": "198.51.100.102"
+```
+
+the primary keys on the devices also have changed:
+
+```json
+"key": {
+  "primary_ip": {
+  "type": "string",
+  "required": false,
+  "nullable": false
+  }
+},
 ```
 
 # step 3 - generating the prometheus configuration
@@ -104,7 +116,7 @@ $ alembic plan --backend prometheus -f resolved.json -o plan.json
 ```
 
 ```bash
-$ alembic apply --backend prometheus --plan plan.json --allow-delete
+$ alembic apply --backend prometheus --plan plan.json
 ```
 
 this emits three configuration files required by prometheus;
@@ -139,7 +151,7 @@ the address to the running instance, and then press "Build a
 dashboard". inside the dasboard builder we import the interface file
 from earlier, to get something like this:
 
-![fig. 1: a grafana dashboard](./assets/dashboard.png)
+![fig. 1: a grafana dashboard](./assets/grafana/grafana_dashboard.png)
 
 # conclusions
 
@@ -151,4 +163,4 @@ or data scraping.
 
 
 [^1]: this also requires the starlark file `transforms.star` to be
-      present, get it [here]().
+      present, get it [here](./assets/grafana/transforms.star).
