@@ -44,6 +44,9 @@ for.
 $ alembic import --backend netbox -f schema.yaml -o ir.yaml
 ```
 
+if you want to use the same schema as the one used when writing this
+article, get it [`here`](./assets/grafana/schema.yaml).
+
 ## step 2 - transforming the data
 
 looking at the ir and its objects, we can see that each device has the
