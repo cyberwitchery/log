@@ -2,7 +2,7 @@
 title: "metrics for free: alembic <3 prometheus"
 date: 2026-09-27
 slug: grafana
-tags: [network automation, tooling, release]
+tags: [network automation, tooling, alembic]
 summary: "use alembic together with prometheus and grafana to easily collect and visualize metrics about all of the devices in your system"
 "links?": true
 links:
@@ -31,7 +31,7 @@ solve this problem in a very neat and convenient way. in the following
 post we're going to look at how to do this in practice!
 
 
-# step 1 - importing your data
+## step 1 - importing your data
 
 first of all we have to make sure that all the information about your
 system is up to date. perhaps you already have it stored in a file
@@ -44,7 +44,7 @@ for.
 $ alembic import --backend netbox -f schema.yaml -o ir.yaml
 ```
 
-# step 2 - transforming the data
+## step 2 - transforming the data
 
 looking at the ir and its objects, we can see that each device has the
 following kind of field:
@@ -55,7 +55,7 @@ following kind of field:
 
 this is a reference to an ip address object, because that's how
 netbox organizes its data. what the prometheus adapter wants is a
-literal ip address (e.g "165.10.20.3") stored in a field called just
+literal ip address (e.g. "165.10.20.3") stored in a field called just
 `primary_ip`. we also need to use this ip as the primary key for the
 devices, rather than relying on its name.
 
@@ -67,7 +67,7 @@ file. we will use a ready-made file with transformations called
 [`resolve.yaml`](./assets/grafana/resolve.yaml) and apply it like so[^1]:
 
 ```bash
-$ alembic map -f ir.json --spec resolve.yaml -o resolved.json
+$ alembic map -f ir.yaml --spec resolve.yaml -o resolved.json
 ```
 
 now, the object from above (i.e. the one that has the exact same uid)
@@ -89,7 +89,7 @@ the primary keys on the devices also have changed:
 },
 ```
 
-# step 3 - generating the prometheus configuration
+## step 3 - generating the prometheus configuration
 
 with the data in the correct shape, we're ready to run the prometheus
 adapter (first make sure that its binary is located somewhere on your
@@ -122,7 +122,7 @@ $ alembic apply --backend prometheus --plan plan.json
 this emits three configuration files required by prometheus;
 `targets.json`, `rules.yml` & `prometheus.yml`.
 
-# step 4 - start prometheus
+## step 4 - start prometheus
 
 we're ready to collect metrics from the devices. given that prometheus
 has been
@@ -139,27 +139,28 @@ browser to inspect the metrics as they are collected. to learn more
 about how prometheus queries work, see their
 [documentation](https://prometheus.io/docs/introduction/overview/).
 
-# step 5 - visualize using grafana
+## step 5 - visualize using grafana
 
 to get a nice dashboard (worthy of your sci-fi movie of choice) we
 turn to grafana. to not have to manually set up various common widgets
-like graphs and gauges, the recommended way is to download something
-like "Node Exporter Full" from the [grafana dashboard
+like graphs and gauges, the recommended way is to download the
+interface file (a json file) for something like "Node Exporter Full"
+from the [grafana dashboard
 collection](https://grafana.com/grafana/dashboards/). inside the
 grafana web interface we can add a prometheus data source by entering
 the address to the running instance, and then press "Build a
-dashboard". inside the dasboard builder we import the interface file
-from earlier, to get something like this:
+dashboard". inside the dashboard builder we import the interface file,
+to get something like this:
 
 ![fig. 1: a grafana dashboard](./assets/grafana/grafana_dashboard.png)
 
-# conclusions
+## conclusions
 
-so there you have it, visualization of your your whole system in five
-easy steps. the main take away (as always with alembic) is that once
-we have the information about our system in ir, we can do a lot of
-neat things that otherwise would have taken a lot of bespoke scripting
-or data scraping.
+so there you have it, visualization of your whole system in five easy
+steps. the main takeaway (as always with alembic) is that once we
+have the information about our system in ir, we can do a lot of neat
+things that otherwise would have taken a lot of bespoke scripting or
+data scraping.
 
 
 [^1]: this also requires the starlark file `transforms.star` to be
