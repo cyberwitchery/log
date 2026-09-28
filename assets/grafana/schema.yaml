@@ -1,0 +1,61 @@
+schema:
+  types:
+    dcim.manufacturer:
+      key:
+        slug:
+          type: slug
+      fields:
+        name:
+          type: string
+        slug:
+          type: slug
+    dcim.device_role:
+      key:
+        slug:
+          type: slug
+      fields:
+        name:
+          type: string
+        slug:
+          type: slug
+    dcim.device_type:
+      key:
+        slug:
+          type: slug
+      fields:
+        manufacturer:
+          type: ref
+          target: dcim.manufacturer
+        model:
+          type: string
+        slug:
+          type: slug
+    dcim.site:
+      key:
+        slug:
+          type: slug
+      fields:
+        name:
+          type: string
+        slug:
+          type: slug
+        status:
+          type: string
+    dcim.device:
+      key:
+        name:
+          type: slug
+      fields:
+        name:
+          type: slug
+        site:
+          type: ref
+          target: dcim.site
+        role:
+          type: ref
+          target: dcim.device_role
+        device_type:
+          type: ref
+          target: dcim.device_type
+        status:
+          type: string
