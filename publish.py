@@ -117,7 +117,7 @@ def render_sitemap(tpl, posts):
             pystache.render(
                 tpl,
                 {
-                    "today": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                    "today": date.today().isoformat(),
                     "posts": posts,
                 },
             )
@@ -276,7 +276,7 @@ def copy_assets():
 
 
 def get_posts():
-    today = datetime.now(timezone.utc).date()
+    today = date.today()
     posts = [get_post(f) for f in os.listdir("posts") if f.endswith(".md")]
     posts = [p for p in posts if p is not None and p["date"] <= today]
     posts.sort(key=lambda p: p["date"], reverse=True)
