@@ -33,6 +33,7 @@
       document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
   </script>
 
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/log.css">
   <link rel="alternate" type="application/rss+xml" title="cyberwitchery log" href="feed.rss">
 
@@ -44,51 +45,65 @@
   </script>
 </head>
 <body>
-  <div class="wrap">
-
-    <header class="masthead">
-      <a class="masthead__brand" href="https://cyberwitchery.com/">cyberwitchery lab</a>
-      <nav class="masthead__nav">
-        <a href="./">log</a><span>·</span>
-        <a href="https://github.com/cyberwitchery/">github</a><span>·</span>
-        <a href="feed.rss">rss</a><span>·</span>
-        <a href="https://cal.com/cyberwitchery">book a call</a>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="toggle light / dark" title="toggle light / dark">
-          <span class="theme-toggle__glyph"></span>
-        </button>
-      </nav>
-    </header>
-
+  <a class="skip" href="#main">skip to content</a>
+  <header class="top">
+    <div class="wrap bar">
+      <a class="brand" href="/"><svg aria-hidden="true" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="square"><path d="M128 24 L160 56 L128 88 L96 56 Z"></path><path d="M128 168 L160 200 L128 232 L96 200 Z"></path><path d="M128 88 L128 168"></path><path d="M44 128 L212 128"></path></svg><span>cyberwitchery lab</span></a>
+      <div class="bar__end">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="toggle light / dark" title="toggle light / dark"><span class="theme-toggle__glyph"></span></button>
+        <button class="menu-btn" type="button" popovertarget="menu">menu</button>
+        <nav id="menu" popover="auto" aria-label="main">
+          <div class="grp p"><span class="label pl">products</span><a href="/alembic.html">alembic</a><a href="/divinate.html">divinate</a><!-- parked: ddt --><!--<a href="/ddt.html">ddt</a>--></div>
+          <span class="sep" aria-hidden="true"></span>
+          <div class="grp"><span class="label svc">services</span><a href="/index.html#consulting">consulting</a><a href="/index.html#talks">talks</a><a href="./">writing</a></div>
+          <a class="btn" href="https://cal.com/cyberwitchery" target="_blank" rel="noopener">book a call</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <main id="main">
     <article class="post">
-      <a class="post__back" href="./">← log</a>
+      <div class="wrap">
+        <a class="post__back" href="./">← log</a>
 
-      <h1 class="post__title">{{title}}</h1>
-      {{#description}}<p class="post__lede">{{description}}</p>{{/description}}
+        <h1 class="post__title">{{title}}</h1>
+        {{#description}}<p class="post__lede">{{description}}</p>{{/description}}{{^description}}<div class="post__lede">{{{summary}}}</div>{{/description}}
 
-      <div class="post-cols">
-        <aside class="post-rail">
-          <div class="post-rail__date">{{date_iso}}</div>
-          <div class="post-rail__author">{{author}}</div>
-          {{#has_tags}}<div class="post-rail__tags">{{#tags}}<span>#{{name}}</span>{{/tags}}</div>{{/has_tags}}
-          {{#links?}}<div class="post-rail__links">{{#links}}<a href="{{url}}">{{label}} ↗</a>{{/links}}</div>{{/links?}}
-        </aside>
+        <div class="post-cols">
+          <aside class="post-rail">
+            <div class="post-rail__date">{{date_iso}}</div>
+            <div class="post-rail__author">{{author}}</div>
+            {{#has_tags}}<div class="post-rail__tags">{{#tags}}<a href="./#tag={{name}}">#{{name}}</a>{{/tags}}</div>{{/has_tags}}
+            {{#links?}}<div class="post-rail__links">{{#links}}<a href="{{url}}">{{label}} ↗</a>{{/links}}</div>{{/links?}}
+          </aside>
 
-        <div class="post-main">
-          <div class="post-body">
-            {{{content}}}
+          <div class="post-main">
+            <div class="post-body">
+              {{{content}}}
+            </div>
+
+            <nav class="post-nav" aria-label="more from the log">
+              {{#older}}<a class="post-nav__older" href="{{out_file}}"><span class="label">← older</span><span class="post-nav__title">{{title}}</span></a>{{/older}}
+              {{#newer}}<a class="post-nav__newer" href="{{out_file}}"><span class="label">newer →</span><span class="post-nav__title">{{title}}</span></a>{{/newer}}
+            </nav>
           </div>
         </div>
       </div>
     </article>
+  </main>
 
-    <footer class="site-footer">
-      <span>© 2026</span><span>·</span>
-      <a href="https://cyberwitchery.com/">cyberwitchery</a><span>·</span>
-      <a class="u" href="/imprint.html">imprint</a><span>·</span>
-      <a class="u" href="/privacy.html">privacy</a>
-    </footer>
-
-  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <div class="copy"><svg aria-hidden="true" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="square"><path d="M128 24 L160 56 L128 88 L96 56 Z"></path><path d="M128 168 L160 200 L128 232 L96 200 Z"></path><path d="M128 88 L128 168"></path><path d="M44 128 L212 128"></path></svg><span>© 2026 cyberwitchery</span></div>
+      <nav aria-label="footer">
+        <a href="mailto:contact@cyberwitchery.com">contact@cyberwitchery.com</a>
+        <a href="feed.rss">rss</a>
+        <a href="https://github.com/cyberwitchery" target="_blank" rel="noopener">github</a>
+        <a href="/imprint.html">imprint</a>
+        <a href="/privacy.html">privacy</a>
+      </nav>
+    </div>
+  </footer>
   <script src="assets/log.js" defer></script>
 </body>
 </html>

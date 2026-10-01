@@ -310,8 +310,18 @@ def main(dry_run=False):
     with open("templates/layout.html", encoding="utf-8") as f:
         tpl = f.read()
 
-    for post in posts:
-        render_post(tpl, post)
+    for i, post in enumerate(posts):
+        neighbours = {
+            "newer": posts[i - 1] if i > 0 else None,
+            "older": posts[i + 1] if i + 1 < len(posts) else None,
+        }
+        for key, other in neighbours.items():
+            if other:
+                neighbours[key] = {
+                    "title": other["title"],
+                    "out_file": other["out_file"],
+                }
+        render_post(tpl, dict(post, **neighbours))
 
     with open("templates/feed_tpl.rss", encoding="utf-8") as f:
         tpl = f.read()
