@@ -16,9 +16,8 @@ links:
 ---
 
 last year i [wrote on my personal blog](https://blog.veitheller.de/Secure-by-default_over_Manuals.html)
-that the hierarchy of controls runs from defaults and guardrails up to manuals
-and training, and that the higher you step the more expensive and less scalable
-the control gets. i won’t make the argument here again.
+that defaults and guardrails are cheaper and scale better than manuals and
+training. i won’t make that argument again here.
 
 this post is what’s missing from that argument, which is the action. in this
 post, we walk through the ci we actually run in every cyberwitchery repo, gate
@@ -41,7 +40,7 @@ more:
     steps:
       - name: check results
         run: |
-          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}" == "true" ]]; then
             exit 1
           fi
 ```
@@ -126,9 +125,9 @@ on a calendar, but i’m not that disciplined. maybe some day.
 
 ## the accidental dependency
 
-`cargo deny` tells you a dependency is known-bad, but not that it’s new. for
-that every repo commits an approved sbom per package to `sbom/`, and a shared
-workflow in our `.github` repo diffs against it using
+`cargo deny` tells you a dependency is known-bad, but not that it’s new to the
+project. for that every repo commits an approved sbom per package to `sbom/`,
+and a shared workflow in our `.github` repo diffs against it using
 [our own tool](https://cyberwitchery.com/log/sbom-diff.html). the call site is
 short:
 
