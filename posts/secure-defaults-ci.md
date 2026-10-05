@@ -148,7 +148,7 @@ approved. the tool versions are pinned as well, because a new `cargo-cyclonedx`
 changes what counts as a component, and a baseline only means something if it
 was generated the same way.
 
-here is i`sbom-diff`’s own last release, 0.8.0 to 0.9.0, a release that shipped
+here is `sbom-diff`’s own last release, 0.8.0 to 0.9.0, a release that shipped
 cyclonedx 1.6 support and a pile of parser fixes (generated before we added
 `--target all`, hence the smaller numbers):
 
@@ -324,7 +324,7 @@ none of this is clever, because i enjoy boring security measures. every one of
 these is under fifteen lines of yaml at the call site and a bunch of standard
 (or in-house) tooling.
 
-still, it lets us sleep at night, and it doesn’t get any better than that.
+still, it lets us rest easy, and it doesn’t get any better than that.
 
 [^1]: ours is not, currently. branch protection on our repos requires a review,
 not a check. success is, as such, mostly hygiene.
