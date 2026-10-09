@@ -1,10 +1,10 @@
 ---
-title: "secure defaults as ci you can copy"
+title: "secure defaults as ci"
 date: 2026-10-09
 author: "Veit Heller"
 slug: secure-defaults-ci
 tags: [security, supply chain, tooling]
-summary: "the ci we run in every repo: every dependency checked, an sbom diffed against the last release, an unsafe budget, and a coverage floor. the yaml, and what each gate has actually caught.<br/>`cargo install sbom-diff unsafe-budget`"
+summary: "in this post, we examine the ci we run in every repo.<br/>`cargo install sbom-diff unsafe-budget`"
 "links?": true
 links:
     - label: sbom-diff
