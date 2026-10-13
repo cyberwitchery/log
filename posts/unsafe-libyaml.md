@@ -15,7 +15,7 @@ links:
       url: https://github.com/cyberwitchery/alembic/releases/tag/v0.11.0
 ---
 
-this morning, the `cargo deny` ci gate went red in divinate:
+this morning, the `cargo deny` ci gate went red in [divinate](https://cyberwitchery.com/divinate):
 
 ```
 error[unmaintained]: unsafe-libyaml is unmaintained
@@ -40,8 +40,9 @@ pr in any of them would have gone red.
 
 the repos weren’t equally hard. the netbox and nautobot clis only write yaml,
 for `--format yaml`, so that was one line each. two private repos parse their
-config into typed structs, which made their swap mechanical. alembic was a
-real job, more on that below.
+config into typed structs, which made their swap mechanical. divinate simply
+reads configs, and served as our canary for the change. alembic was a real job,
+more on that below.
 
 ## the replacement
 
@@ -74,8 +75,8 @@ new: Ok(Object {"x": Number(1)})
 
 everything after the dedent is gone, and no error is raised. for an
 inventory, objects that vanish from the input are objects the plan deletes.
-until it’s fixed, we read through the multi-document reader and require
-exactly one document. it’s good to have tests.
+until it’s released, we read through the multi-document reader and require
+exactly one document. it’s good to do your diligence before publishing.
 
 the other issues were easy to work around:
 
