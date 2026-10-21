@@ -14,6 +14,7 @@ links:
       url: https://netboxlabs.com/docs/netbox/
     - label: nautobot
       url: https://github.com/nautobot/nautobot
+author: Erik Svedäng
 ---
 
 picture this; you're the person in charge of picking a suitable dcim
@@ -29,21 +30,45 @@ a spec, so you could just use it and modify it as you like?!
 well, we got some good news for you; alembic can do just this (and
 more). this blog post will show you how.
 
-# the spec
+# the inventory
 
-to begin, we need a specification of what things to create in the
-system. we could define this in an inventory file, with a
-backend-agnostic schema (see the [docs]() on how to do
-this). alternatively, we could use the `alembic-file-generator` which
-is included in the alembic repo. this gives us the ability to define
-exactly how many objects our inventory should include:
+to begin, you need a specification of what things to create in the
+system, stored in an inventory file. there are many options for how to
+obtain such a file:
+
+1. you could define it yourself, using a backend-agnostic schema. see
+[ir
+docs](https://github.com/cyberwitchery/alembic/blob/main/docs/ir.md)
+on how to do this. this will teach you the most about how the file
+format and alembic ir works. if you are ever tempted to use a coding agent
+for writing the file, there's a `SKILL.md` in the `alembic-cli` crate
+that will help it out.
+
+2. if you already have a system running with your own data,
+[importing](https://github.com/cyberwitchery/alembic/blob/main/docs/cli.md#import)
+that could make more sense. a benefit with this approach is that you
+would immediately see if there's something that the new backend can't
+represent in a good way.
+
+3. you could just take one of the example files from the `alembic`
+repo, e.g
+[/examples/inventory.yaml](https://github.com/cyberwitchery/alembic/blob/main/examples/inventory.yaml). this
+is definitely the quickest way! those files are quite small though, and
+not particularly representative of what a messy real world system
+would look like.
+
+4. for flexibility and stress testing, you could use the
+`alembic-file-generator` which is included in the alembic repo
+(install it with `cargo install --path ./crates/alembic-file-generator`). this
+gives you the ability to define exactly how many objects our inventory
+should include:
 
 ```bash
-$ cargo run --bin alembic-file-generator -- --kind inventory
+$ alembic-file-generator --kind=inventory --num-devices=10000
 ```
 
-this will generate an inventory file called `inventory.yaml`, check it
-out before we move on!
+whatever method you choose, make sure that you have an
+`inventory.yaml` file at hand before we move on!
 
 # trying out a backend (netbox)
 
