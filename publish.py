@@ -117,7 +117,7 @@ def render_sitemap(tpl, posts):
             pystache.render(
                 tpl,
                 {
-                    "today": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                    "today": date.today().isoformat(),
                     "posts": posts,
                 },
             )
@@ -149,6 +149,7 @@ def render_index(tpl, posts, alltags):
             "headline": p.get("title", ""),
             "url": p["canonical"],
             "datePublished": p["date_iso"],
+            "author": p["author_entity"],
         }
         for p in posts
     ]
@@ -187,9 +188,20 @@ def get_post(target):
         )
         return None
 
-    if "date" not in args:
+    missing_fields = [
+        field for field in ("title", "date", "author") if not args.get(field)
+    ]
+    if missing_fields:
         print(
-            f"WARNING: skipping {target}: missing required 'date' field in frontmatter",
+            f"WARNING: skipping {target}: missing required frontmatter field(s): "
+            f"{', '.join(missing_fields)}",
+            file=sys.stderr,
+        )
+        return None
+
+    if not isinstance(args["author"], str):
+        print(
+            f"WARNING: skipping {target}: 'author' must be a string",
             file=sys.stderr,
         )
         return None
@@ -224,6 +236,7 @@ def get_post(target):
 
     canonical = f"{BASE_URL}/{slug}.html"
     args["canonical"] = canonical
+    args["author_entity"] = {"@type": "Person", "name": args["author"]}
     description = (args.get("description") or "").strip()
     if not description:
         description = text_from_html(args["summary"])
@@ -238,7 +251,7 @@ def get_post(target):
             "mainEntityOfPage": canonical,
             "datePublished": args["date_iso"],
             "dateModified": args["date_iso"],
-            "author": ORG,
+            "author": args["author_entity"],
             "publisher": ORG,
             "keywords": ", ".join(raw_tags),
         }
@@ -263,7 +276,7 @@ def copy_assets():
 
 
 def get_posts():
-    today = datetime.now(timezone.utc).date()
+    today = date.today()
     posts = [get_post(f) for f in os.listdir("posts") if f.endswith(".md")]
     posts = [p for p in posts if p is not None and p["date"] <= today]
     posts.sort(key=lambda p: p["date"], reverse=True)
@@ -297,8 +310,18 @@ def main(dry_run=False):
     with open("templates/layout.html", encoding="utf-8") as f:
         tpl = f.read()
 
-    for post in posts:
-        render_post(tpl, post)
+    for i, post in enumerate(posts):
+        neighbours = {
+            "newer": posts[i - 1] if i > 0 else None,
+            "older": posts[i + 1] if i + 1 < len(posts) else None,
+        }
+        for key, other in neighbours.items():
+            if other:
+                neighbours[key] = {
+                    "title": other["title"],
+                    "out_file": other["out_file"],
+                }
+        render_post(tpl, dict(post, **neighbours))
 
     with open("templates/feed_tpl.rss", encoding="utf-8") as f:
         tpl = f.read()

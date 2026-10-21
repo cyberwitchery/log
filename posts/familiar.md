@@ -1,6 +1,7 @@
 ---
 title: "familiar: prompts as cli primitives"
 date: 2026-01-21
+author: "Veit Heller"
 slug: familiar
 tags: [ai, agents, tooling, release]
 summary: "compose and invoke agent prompts from reusable templates: conjurings + invocations. <br/>`pip install familiar`"

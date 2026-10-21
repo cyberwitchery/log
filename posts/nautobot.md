@@ -1,6 +1,7 @@
 ---
 title: "nautobot.rs: the netbox.rs companion for nautobot"
 date: 2026-02-01
+author: "Veit Heller"
 slug: nautobot.rs
 tags: [network automation, tooling, release]
 summary: "interact with nautobot in your code and cli<br/>`cargo add nautobot`"

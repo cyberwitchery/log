@@ -1,6 +1,7 @@
 ---
 title: "alembic: a data-model-first dcim/ipam converger"
 date: 2026-03-04
+author: "Veit Heller"
 slug: alembic
 tags: [network automation, tooling, release]
 summary: "sync your infrastructure data across netbox and nautobot<br/>`cargo install alembic-cli`"

@@ -1,6 +1,7 @@
 ---
 title: "how we test the writes: fault injection and resumable apply"
 date: 2026-07-23
+author: "Veit Heller"
 slug: testing-the-writes
 tags: [alembic, network automation, tooling]
 summary: "apply is the only step that writes. half-finished apply stays safe with a journal that resumes, writes safe to repeat, and an adapter whose only job is to fail.<br/>`cargo install alembic-cli`"

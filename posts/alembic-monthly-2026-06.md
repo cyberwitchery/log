@@ -1,6 +1,7 @@
 ---
 title: "alembic dev log, june 2026"
 date: 2026-07-01
+author: "Veit Heller"
 slug: alembic-dev-log-2026-06
 tags: [alembic, network automation, newsletter]
 summary: "a monthly log of what moved in alembic and the tools around it. this first issue sets the baseline.<br/>`cargo install alembic-cli`"

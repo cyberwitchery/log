@@ -1,7 +1,8 @@
 /* ============================================================
    cyberwitchery log — behaviour (vanilla, no dependencies)
    1. theme toggle: system default, manual override, persisted
-   2. tag filter on the index
+   2. tag filter on the index, mirrored in the url as #tag=<name>
+      so a post's tag links open the index already filtered
    Load with <script src="/log/assets/log.js" defer></script>.
 
    NOTE: the *initial* theme must be set BEFORE first paint to
@@ -50,7 +51,13 @@
 
   var rows  = Array.prototype.slice.call(document.querySelectorAll('.log-list .row'));
   var count = document.querySelector('.log-count');
+  var current = document.querySelector('.tag-filter__current');
   var active = null; /* null = "all" */
+  var m = /^#tag=(.+)$/.exec(location.hash);
+  if (m) {
+    var wanted = decodeURIComponent(m[1]);
+    if (filterBar.querySelector('button[data-tag="' + wanted.replace(/"/g, '') + '"]')) active = wanted;
+  }
 
   function plural(n) { return n + (n === 1 ? ' entry' : ' entries'); }
 
@@ -76,6 +83,7 @@
       var t = b.getAttribute('data-tag') || null;
       b.classList.toggle('is-active', t === active);
     });
+    if (current) current.textContent = active ? '#' + active : 'all';
     if (count) count.textContent = plural(shown) + (active ? ' tagged #' + active : '');
   }
 
@@ -84,6 +92,7 @@
     if (!btn) return;
     var tag = btn.getAttribute('data-tag') || null; /* the "all" button has no data-tag */
     active = (tag && tag === active) ? null : tag;   /* click active tag again → back to all */
+    history.replaceState(null, '', active ? '#tag=' + encodeURIComponent(active) : location.pathname);
     render();
   });
 

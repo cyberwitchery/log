@@ -11,6 +11,7 @@ each post is a markdown file in `posts/` with yaml frontmatter:
 ---
 title: "my post title"
 date: 2026-01-15
+author: "author name"
 slug: my-post
 tags: [topic-a, topic-b]
 summary: "one-line summary shown on the index page"
@@ -18,6 +19,8 @@ summary: "one-line summary shown on the index page"
 
 Post body in markdown.
 ```
+
+`title`, `date`, and `author` are required.
 
 optional frontmatter fields:
 

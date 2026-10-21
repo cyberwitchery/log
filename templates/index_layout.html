@@ -29,6 +29,7 @@
       document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
   </script>
 
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/log.css">
   <link rel="alternate" type="application/rss+xml" title="cyberwitchery log" href="feed.rss">
 
@@ -40,51 +41,71 @@
   </script>
 </head>
 <body>
-  <div class="wrap">
+  <a class="skip" href="#main">skip to content</a>
+  <header class="top">
+    <div class="wrap bar">
+      <a class="brand" href="/"><svg aria-hidden="true" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="square"><path d="M128 24 L160 56 L128 88 L96 56 Z"></path><path d="M128 168 L160 200 L128 232 L96 200 Z"></path><path d="M128 88 L128 168"></path><path d="M44 128 L212 128"></path></svg><span>cyberwitchery lab</span></a>
+      <div class="bar__end">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="toggle light / dark" title="toggle light / dark"><span class="theme-toggle__glyph"></span></button>
+        <button class="menu-btn" type="button" popovertarget="menu">menu</button>
+        <nav id="menu" popover="auto" aria-label="main">
+          <div class="grp p"><span class="label pl">products</span><a href="/alembic.html">alembic</a><a href="/divinate.html">divinate</a><!-- parked: ddt --><!--<a href="/ddt.html">ddt</a>--></div>
+          <span class="sep" aria-hidden="true"></span>
+          <div class="grp"><span class="label svc">services</span><a href="/index.html#consulting">consulting</a><a href="/index.html#talks">talks</a><a href="./" aria-current="page">writing</a></div>
+          <a class="btn" href="https://cal.com/cyberwitchery" target="_blank" rel="noopener">book a call</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <section class="s">
+      <div class="wrap lhead">
+        <h1 class="h1">log</h1>
+        <p class="sub">notes on what we build, how it works, and what we learn doing it.</p>
+      </div>
+    </section>
 
-    <header class="masthead">
-      <a class="masthead__brand" href="https://cyberwitchery.com/">cyberwitchery lab</a>
-      <nav class="masthead__nav">
-        <a href="./" aria-current="page">log</a><span>·</span>
-        <a href="https://github.com/cyberwitchery/">github</a><span>·</span>
-        <a href="feed.rss">rss</a><span>·</span>
-        <a href="https://cal.com/cyberwitchery">book a call</a>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="toggle light / dark" title="toggle light / dark">
-          <span class="theme-toggle__glyph"></span>
-        </button>
+    <section class="s last" aria-label="entries">
+      <div class="wrap llist">
+        <!-- tags ordered by frequency (desc), tie-broken alphabetically.
+             the "all" button has no data-tag. -->
+        <details class="tag-filter-d">
+          <summary><span class="label">filter</span><span class="tag-filter__current">all</span><span class="tag-filter__pm" aria-hidden="true">±</span></summary>
+          <div class="tag-filter" role="toolbar" aria-label="filter by tag">
+            <button class="is-active">all</button>
+            {{#alltags}}<button data-tag="{{name}}">#{{name}}</button>{{/alltags}}
+          </div>
+        </details>
+
+        <div class="log-list">
+          {{#posts}}
+          <a class="row" href="{{out_file}}" data-tags="{{data_tags}}">
+            <span class="row__date">{{date_iso}}</span>
+            <span class="row__title">{{title}}</span>
+            <div class="row__sum">{{{summary}}}</div>
+            <span class="row__tags">{{#tags}}#{{name}} {{/tags}}</span>
+            <span class="row__arrow" aria-hidden="true">→</span>
+          </a>
+          {{/posts}}
+        </div>
+
+        <div class="log-count"><!-- filled by log.js --></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="copy"><svg aria-hidden="true" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="square"><path d="M128 24 L160 56 L128 88 L96 56 Z"></path><path d="M128 168 L160 200 L128 232 L96 200 Z"></path><path d="M128 88 L128 168"></path><path d="M44 128 L212 128"></path></svg><span>© 2026 cyberwitchery</span></div>
+      <nav aria-label="footer">
+        <a href="mailto:contact@cyberwitchery.com">contact@cyberwitchery.com</a>
+        <a href="feed.rss">rss</a>
+        <a href="https://github.com/cyberwitchery" target="_blank" rel="noopener">github</a>
+        <a href="/imprint.html">imprint</a>
+        <a href="/privacy.html">privacy</a>
       </nav>
-    </header>
-
-    <div class="log-head"><h1>log</h1></div>
-
-    <!-- filter bar: tags ordered by frequency (desc), tie-broken alphabetically.
-         the "all" button has no data-tag. -->
-    <div class="tag-filter">
-      <button class="is-active">all</button>
-      {{#alltags}}<button data-tag="{{name}}">#{{name}}</button>{{/alltags}}
     </div>
-
-    <div class="log-list">
-      {{#posts}}
-      <a class="row" href="{{out_file}}" data-tags="{{data_tags}}">
-        <span class="row__date">{{date_iso}}</span>
-        <span class="row__title">{{title}}</span>
-        <span class="row__tags">{{#tags}}#{{name}} {{/tags}}</span>
-        <span class="row__arrow">→</span>
-      </a>
-      {{/posts}}
-    </div>
-
-    <div class="log-count"><!-- filled by log.js --></div>
-
-    <footer class="site-footer">
-      <span>© 2026</span><span>·</span>
-      <a href="https://cyberwitchery.com/">cyberwitchery</a><span>·</span>
-      <a class="u" href="/imprint.html">imprint</a><span>·</span>
-      <a class="u" href="/privacy.html">privacy</a>
-    </footer>
-
-  </div>
+  </footer>
   <script src="assets/log.js" defer></script>
 </body>
 </html>

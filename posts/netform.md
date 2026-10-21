@@ -1,6 +1,7 @@
 ---
 title: "netform: lossless config diffing for network devices"
 date: 2026-03-11
+author: "Veit Heller"
 slug: netform
 tags: [network automation, tooling, release]
 summary: "parse and diff network configs, catch drift before it bites<br/>`cargo install netform_cli`"

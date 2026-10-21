@@ -1,6 +1,7 @@
 ---
 title: "netbox.rs: an ergonomic netbox client in rust"
 date: 2026-01-25
+author: "Veit Heller"
 slug: netbox.rs
 tags: [network automation, tooling, release]
 summary: "interact with netbox in your code and cli <br/>`cargo install netbox-cli`"

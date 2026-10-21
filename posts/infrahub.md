@@ -1,6 +1,7 @@
 ---
 title: "infrahub.rs: a graphql client for infrahub in rust"
 date: 2026-02-09
+author: "Veit Heller"
 slug: infrahub.rs
 tags: [network automation, tooling, release]
 summary: "talk to infrahub from rust, with typed graphql operations<br/>`cargo add infrahub`"

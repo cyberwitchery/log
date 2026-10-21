@@ -1,6 +1,7 @@
 ---
 title: "alembic dev log, august 2026"
 date: 2026-09-01
+author: "Veit Heller"
 slug: alembic-dev-log-2026-08
 tags: [alembic, network automation, newsletter]
 summary: "0.9.0: a larger team, identity through uid, and an operating guide for agents.<br/>`cargo install alembic-cli`"
