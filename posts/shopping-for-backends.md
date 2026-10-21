@@ -67,20 +67,23 @@ should include:
 $ alembic-file-generator --kind=inventory --num-devices=10000
 ```
 
-whatever method you choose, make sure that you have an
-`inventory.yaml` file at hand before we move on!
+before we move on, make sure that you have some kind of inventory file
+(named `inventory.yaml`) at hand!
 
 # trying out a backend (netbox)
 
-so, let's say that we want to start by trying out
+let's say that we want to start by trying out
 [netbox](https://netboxlabs.com/docs/netbox/). this is a good first
-target, since it requires no extra work to set up. the
-inventory file from above is immediately applicable to netbox, we just
-need to make a plan and apply it like so:
+target, since it requires no extra work to set up if you used the file
+generator or `examples/inventory.yaml`. in that case, we just need to make a
+plan and apply it like so:
 
 ```bash
 $ alembic plan --backend netbox --file inventory.yaml --output plan.json
 ```
+
+the cli tool will display a list of all the planned changes. if it
+looks good, apply those changes:
 
 ```bash
 $ alembic apply --backend netbox --plan plan.json
@@ -89,18 +92,17 @@ $ alembic apply --backend netbox --plan plan.json
 inspecting our local netbox inventory through the web interface we can
 see that things are in order, e.g:
 
-![fig. 1: netbox cables](./assets/netbox_cables.png)
+![fig. 1: netbox devices](./assets/netbox_devices.jpg)
 
-# slightly trickier
+# massaging the data
 
-if you didn't generate the inventory using the
-`alembic-file-generator` you might have the data in a slightly
-incorrect format. for example, maybe you're using something like
-`/examples/walkthroughs/eval-fabric.yaml` in this repo. this file contains a
-backend-agnostic spec for a very small system.
+depending on how you got hold of your `inventory.yaml` file, it might
+have its data in a slightly incompatible format. this is to be
+expected, and something that alembic will handle with no trouble!
 
-in this case, there's a small discrepancy in how netbox handles ip
-adresses compared to how they are stored in the schema. the interface
+for example, if you're using something like `/examples/walkthroughs/eval-fabric.yaml`
+from this repo, there's a small discrepancy in how netbox handles ip
+adresses compared to how they are stored in that schema. the interface
 assigned to an ip is stored under the key `assigned_object` rather
 than `assigned_interface`. to solve this, we can use `alembic
 map` which transforms data. here's the relevant snippet from
