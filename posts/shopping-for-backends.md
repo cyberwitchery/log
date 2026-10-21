@@ -91,8 +91,8 @@ looks good, apply those changes:
 $ alembic apply --backend netbox --plan plan.json
 ```
 
-inspecting our local netbox inventory through the web interface you can
-check to see that things are in order, e.g:
+inspecting your local netbox inventory through the web interface you can
+check to see that things are in order, e.g.:
 
 ![fig. 1: netbox devices](./assets/netbox_devices.jpg)
 
@@ -102,13 +102,13 @@ depending on how your `inventory.yaml` file was constructed, it
 might have its data in a slightly incompatible format. this is no
 reason for panic, and something that alembic will handle with no trouble!
 
-for example, if you're using `/examples/walkthroughs/eval-fabric.yaml`
+for example, if you're using `./examples/walkthroughs/eval-fabric.yaml`
 from the alembic repo, there's a small discrepancy in how netbox handles ip
 addresses compared to how they are stored in that schema. the interface
 assigned to an ip is stored under the key `assigned_object` rather
 than `assigned_interface`. to solve this, use `alembic
 map` to transform the data. here's the relevant snippet from
-`/examples/walkthroughs/eval-fabric-netbox.yaml`:
+`./examples/walkthroughs/eval-fabric-netbox.yaml`:
 
 ```yaml
 rules:
@@ -176,7 +176,8 @@ has the `assigned_interface` key that the nautobot rules expect):
 $ alembic map --file ./examples/walkthroughs/eval-fabric.yaml --spec ./examples/walkthroughs/eval-fabric-nautobot.yaml --output nautobot-inventory.yaml
 ```
 
-to finish up, run `plan` and `apply` targeting nautobot. here's the final result
+to finish up, set `NAUTOBOT_URL` and `NAUTOBOT_TOKEN`, then run `plan`
+and `apply` with `--backend nautobot`. here's the final result
 in their web interface:
 
 ![fig. 2: nautobot devices](./assets/nautobot_devices.jpg)
