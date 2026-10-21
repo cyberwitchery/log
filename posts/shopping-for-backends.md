@@ -40,7 +40,7 @@ obtain such a file:
 [ir
 docs](https://github.com/cyberwitchery/alembic/blob/main/docs/ir.md)
 on how to do this. this will teach you the most about how the file
-format and alembic ir works. if you are ever tempted to use a coding agent
+format and alembic ir work. if you are ever tempted to use a coding agent
 for writing the file, there's a `SKILL.md` in the `alembic-cli` crate
 that will help it out.
 
@@ -178,7 +178,7 @@ $ alembic map --file ./examples/walkthroughs/eval-fabric.yaml --spec ./examples/
 
 to finish up, set `NAUTOBOT_URL` and `NAUTOBOT_TOKEN`, then run `plan`
 and `apply` with `--backend nautobot`. here's the final result
-in their web interface:
+in nautobot's web interface:
 
 ![fig. 2: nautobot devices](./assets/nautobot_devices.jpg)
 
