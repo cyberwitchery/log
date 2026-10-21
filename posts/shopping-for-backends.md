@@ -17,18 +17,16 @@ links:
 author: Erik Svedäng
 ---
 
-picture this; you're the person in charge of picking a suitable dcim
-system to keep track of your business' inventory. to get a good feel
-for the new system, you want it filled up with a lot of *stuff*,
-preferably with realistic configurations. instead of adding each
-such thing manually via a web interface, wouldn't it be much nicer if
-a tool did it for you? and ideally this tool would be driven by a
-backend-agnostic spec that could be reused for each potential system
-that you want to try out? and what if someone had already created such
-a spec, so you could just use it and modify it as you like?!
+say you're picking a dcim system to keep track of your business's
+inventory. to get a feel for a candidate, you want it filled with a
+lot of stuff, preferably with realistic configurations. adding each
+thing by hand through a web interface is slow, and you'd have to do it
+again for every system you try. a better approach is one
+backend-agnostic spec that a tool loads into each candidate, ideally
+starting from a spec someone has already written and that you can
+change as you like.
 
-well, we got some good news for you; alembic can do just this (and
-more). this blog post will show you how.
+alembic can do this. this post shows how.
 
 # the inventory
 
@@ -40,9 +38,13 @@ obtain such a file:
 [ir
 docs](https://github.com/cyberwitchery/alembic/blob/main/docs/ir.md)
 on how to do this. this will teach you the most about how the file
-format and alembic ir work. if you are ever tempted to use a coding agent
-for writing the file, there's a `SKILL.md` in the `alembic-cli` crate
-that will help it out.
+format and alembic ir work. if you are ever tempted to use a coding
+agent for writing the file, there's a `SKILL.md` in the `alembic-cli`
+crate that will help out. install it locally with
+
+```bash
+$ alembic skill install alembic
+```
 
 2. if you already have a system running with your own data,
 [importing](https://github.com/cyberwitchery/alembic/blob/main/docs/cli.md#import)
