@@ -1,6 +1,6 @@
 ---
 title: "shopping for backends"
-date: 2026-09-04
+date: 2026-10-23
 slug: shopping-for-backends
 tags: [alembic, network automation, tooling]
 summary: "in which we help out the imaginary person in charge of choosing a new dcim system"
@@ -75,8 +75,8 @@ in any case, make sure that you have some kind of inventory file
 let's say that you want to start by trying out
 [netbox](https://netboxlabs.com/docs/netbox/). this is an especially
 good first target if you used the file generator or
-`examples/inventory.yaml`, since it requires no extra work to set up
-then. point alembic at your netbox instance with the `NETBOX_URL` and
+`examples/inventory.yaml`, since it requires no extra work to set
+up. point alembic at your netbox instance with the `NETBOX_URL` and
 `NETBOX_TOKEN` environment variables, then make a plan and apply it
 like so:
 
