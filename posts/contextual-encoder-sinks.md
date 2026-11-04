@@ -31,7 +31,7 @@ eyeball it and say “looks right”.
 ## context needs boundary
 
 the simplest example was the [css url report](https://github.com/cyberwitchery/contextual-encoder/issues/49).
-`for_css_url` left parentheses alone. inside an unquoted `url(...)`, an
+[`for_css_url`](https://docs.rs/contextual-encoder/latest/contextual_encoder/css/fn.for_css_url.html) left parentheses alone. inside an unquoted `url(...)`, an
 attacker-controlled `)` closes the url token, and the rest of the input can
 become a declaration. we had an encoder for the context, but its rules did
 not enforce the right boundaries.
@@ -74,12 +74,12 @@ failed to close the element. the script encoders now escape `<` too.
 
 xhtml adds another variation: its xml parser resolves character references
 before javascript sees them. a literal `&#96;` in untrusted input can arrive
-at the javascript parser as a backtick. `for_js_template` therefore has to
+at the javascript parser as a backtick. [`for_js_template`](https://docs.rs/contextual-encoder/latest/contextual_encoder/javascript/fn.for_js_template.html) therefore has to
 escape `&` as well.
 
 not every failure was an injection. xml 1.1 normalizes raw NEL and line
 separator characters to line feeds, so preserving them requires character
-references. `for_rust_char` could escape every character correctly and still
+references. [`for_rust_char`](https://docs.rs/contextual-encoder/latest/contextual_encoder/rust/fn.for_rust_char.html) could escape every character correctly and still
 produce an invalid literal from `ab`[^1]. these are different failures, but
 they all require checking what the consumer actually accepts and reads.
 
@@ -126,12 +126,12 @@ started with outside reports from [hey-jj](https://github.com/hey-jj)
 (thanks, kind stranger!). i didn’t find them by staring at the code and
 thinking real hard.
 
-as always, a bit of fuzzing replaces a lot of thinking, and does a better job.
+as is often the case, a bit of fuzzing replaces a lot of thinking, and does a better job.
 the bitter lesson of application security, i suppose.
 
 it’s still done, in the june-announcement sense. the list of contexts isn’t
 growing. we’re just making the existing invariants reliable.
 
 [^1]: also [reported by hey-jj](https://github.com/cyberwitchery/contextual-encoder/issues/63).
-`for_rust_char_checked` now returns `None` unless the input is exactly one
+[`for_rust_char_checked`](https://docs.rs/contextual-encoder/latest/contextual_encoder/rust/fn.for_rust_char_checked.html) now returns `None` unless the input is exactly one
 unicode scalar value. the original function documents that precondition.
