@@ -142,6 +142,14 @@ def render_post(tpl, args):
         f.write(pystache.render(tpl, args))
 
 
+def render_post_markdown(args):
+    # the post's own markdown source, with the frontmatter folded into a plain
+    # header so the file reads on its own.
+    header = f"# {args['title']}\n\n{args['date_iso']} · {args['author']} · {args['canonical']}\n\n"
+    with open(f"out/{args['md_file']}", "w+", encoding="utf-8") as f:
+        f.write(header + args["markdown"].lstrip("\n"))
+
+
 def render_index(tpl, posts, alltags):
     blog_posts = [
         {
@@ -219,6 +227,8 @@ def get_post(target):
     slug = args.get("slug", from_path(target))
     args["filename"] = target
     args["out_file"] = f"{slug}.html"
+    args["md_file"] = f"{slug}.md"
+    args["markdown"] = content
     args["date_iso"] = args["date"].strftime("%Y-%m-%d")
     args["date_and_time"] = utils.format_datetime(
         datetime.combine(args["date"], time(tzinfo=timezone.utc))
@@ -322,6 +332,7 @@ def main(dry_run=False):
                     "out_file": other["out_file"],
                 }
         render_post(tpl, dict(post, **neighbours))
+        render_post_markdown(post)
 
     with open("templates/feed_tpl.rss", encoding="utf-8") as f:
         tpl = f.read()
