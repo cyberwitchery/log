@@ -90,7 +90,7 @@ fixture. `python manage.py runserver` and it’s serving.
 
 every type becomes a model. a `ref` becomes a foreign key, an `enum` becomes
 `choices`, a `mac` or `cidr` gets a validator, and the key becomes a unique
-constraint. let’s look at the device model as an example::
+constraint. let’s look at the device model as an example:
 
 ```python
 class DcimDevice(models.Model):
@@ -126,6 +126,10 @@ $ curl -s -X POST -H 'content-type: application/json' \
 at its core, it’s a simple code generator. the app is generated from your spec,
 warts and all.
 
+![fig. 1: a simple admin dashboard](/assets/django.png)
+
+of course the models are wired up for the admin dashboard, should you need it.
+
 ## what it’s for
 
 i see two uses.
@@ -143,8 +147,7 @@ sometimes you want a place that holds the entities your automation cares
 about, with an api your scripts can query and validation that matches your
 model, and nothing else. maybe you have many systems that want to create
 entities, like ticket systems or customer self care portals, and you just need
-one central sink for all of that, an aggregated source of truth that basically
-acts as an aggregated, api-only source of truth.
+one central aggregated sink for all of that.
 
 ## some history
 
@@ -175,8 +178,8 @@ way to test our claims.
 
 ## fin
 
-the django app was the poc, but it survives to this day, and i think of it
-rather fondly.
+the django app was a proof of concept, but it survives to this day, and i think
+of it rather fondly.
 
 if you want to play with it, the cli can be installed with
 `cargo install alembic-cli` or downloaded from [the releases
