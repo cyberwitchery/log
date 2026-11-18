@@ -7,6 +7,9 @@ updates:
     groups:
       pip:
         patterns: ["*"]
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -14,3 +17,6 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
