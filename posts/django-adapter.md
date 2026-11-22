@@ -126,7 +126,7 @@ $ curl -s -X POST -H 'content-type: application/json' \
 at its core, it’s a simple code generator. the app is generated from your spec,
 warts and all.
 
-![fig. 1: a simple admin dashboard](/assets/django.png)
+![fig. 1: a simple admin dashboard](./assets/django.png)
 
 of course the models are wired up for the admin dashboard, should you need it.
 
